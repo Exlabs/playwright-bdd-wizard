@@ -1,0 +1,19 @@
+type entityDataType = { [key: string]: { [key: string]: string }[] };
+type entititesDataType = { [key: string]: entityDataType };
+
+let entityDataMap: entititesDataType = {};
+
+export function configureEntitiesData(entitiesData: entititesDataType) {
+  entityDataMap = entitiesData;
+}
+
+export default function getEntityData(name: string, version: number) {
+  const entities = Object.keys(entityDataMap);
+  for (const entity of entities) {
+    if (entityDataMap?.[entity]?.[name]?.[version]) {
+      return entityDataMap[entity][name][version];
+    } else {
+      return {};
+    }
+  }
+}

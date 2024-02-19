@@ -2,9 +2,11 @@
   "name": "ui-automation-framework",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "format": "prettier --write \"**/*.{ts,tsx}\""
   },
   "keywords": [],
   "author": "",
@@ -17,6 +19,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "prettier": "2.8.8",
     "dotenv": "^16.4.4"
   }
 }

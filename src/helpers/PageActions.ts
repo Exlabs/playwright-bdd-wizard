@@ -1,8 +1,8 @@
 import { Page, expect, Locator, BrowserContext } from '@playwright/test';
-import testData from '../testData/entities/main.js';
 import Generic from './Generic.js';
 import ProcessEnvironmentVariables from './ProcessEnvironmentVariables.js';
-import loadingMessages from '../testData/loadingMessages.js';
+import getLoadingMessages from '../testDataConfigs/loadingMessagesConfig.js';
+import getEntityData from '../testDataConfigs/testDataConfig.js';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
@@ -71,7 +71,8 @@ export default class PageActions {
     return is_visible;
   }
 
-  async waitForMessagesToDisappear(timeout: number = 30000, messages: string[] = loadingMessages) {
+  async waitForMessagesToDisappear(timeout: number = 30000) {
+    const messages = getLoadingMessages();
     const assertionMessage = `message stays visible for more than ${timeout}ms`;
     const startTime = Date.now();
     for (const message of messages) {
@@ -85,7 +86,7 @@ export default class PageActions {
         if (timeoutLeft <= 0) {
           expect(timeoutLeft, `Messages keep appearing for more than ${timeout}ms`).toBeGreaterThan(0);
         }
-        await this.waitForMessagesToDisappear(timeoutLeft, messages);
+        await this.waitForMessagesToDisappear(timeoutLeft);
         break;
       }
     }
@@ -98,7 +99,7 @@ export default class PageActions {
   async waitForPageToLoad(timeout: number = 100000) {
     const startTime = Date.now();
     let timeoutLeft = await this.generic.timeDelta(startTime, timeout);
-    await this.waitForMessagesToDisappear(timeoutLeft, loadingMessages);
+    await this.waitForMessagesToDisappear(timeoutLeft);
     timeoutLeft = await this.generic.timeDelta(startTime, timeout);
     await this.page.waitForLoadState('load', { timeout: timeoutLeft });
   }
@@ -120,46 +121,31 @@ export default class PageActions {
   }
 
   async fillInFormData(name: string, version: number) {
-    const entities = Object.keys(testData);
-    for (const entity of entities) {
-      if (testData?.[entity]?.[name]?.[version]) {
-        const data = testData[entity][name][version];
-        let nameSaved = false;
-        for (const key in data) {
-          if (!nameSaved) {
-            this.processEnv.set('latestName', data[key]);
-            nameSaved = true;
-          }
-          const fieldLocator = this.page.getByLabel(key);
-          if ((await fieldLocator.getAttribute('role')) === 'combobox') {
-            await this.fillADropDown(fieldLocator, data[key]);
-          } else {
-            await fieldLocator.fill(data[key]);
-          }
-          await this.page.waitForTimeout(150);
-          expect(await fieldLocator.inputValue(), `Couldnt type the ${data[key]}`).toEqual(data[key]);
-        }
-        break;
+    const data = getEntityData(name, version);
+    let nameSaved = false;
+    for (const key in data) {
+      if (!nameSaved) {
+        this.processEnv.set('latestName', data[key]);
+        nameSaved = true;
       }
+      const fieldLocator = this.page.getByLabel(key);
+      if ((await fieldLocator.getAttribute('role')) === 'combobox') {
+        await this.fillADropDown(fieldLocator, data[key]);
+      } else {
+        await fieldLocator.fill(data[key]);
+      }
+      await this.page.waitForTimeout(150);
+      expect(await fieldLocator.inputValue(), `Couldnt type the ${data[key]}`).toEqual(data[key]);
     }
   }
 
   async checkTheFormData(name: string, version: number) {
-    const entities = Object.keys(testData);
-    for (const entity of entities) {
-      if (testData?.[entity]?.[name]?.[version]) {
-        const data = testData[entity][name][version];
-        for (const key in data) {
-          const value = (await this.page.getByLabel(key).getAttribute('value')) as string;
-          expect
-            .soft(
-              await this.generic.isAsExpected(value, data[key]),
-              `Unexpected value at ${name} form, version ${version}`
-            )
-            .toBeTruthy();
-        }
-        break;
-      }
+    const data = getEntityData(name, version);
+    for (const key in data) {
+      const value = (await this.page.getByLabel(key).getAttribute('value')) as string;
+      expect
+        .soft(await this.generic.isAsExpected(value, data[key]), `Unexpected value at ${name} form, version ${version}`)
+        .toBeTruthy();
     }
   }
 

@@ -1,0 +1,6 @@
+*.html
+*.json
+
+.prettierrc
+.features-gen
+test-results

@@ -1,51 +1,52 @@
 import { defineStep } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-// import Generic from '../helpers/Generic.js';
+import Generic from '../helpers/Generic.js';
 import PageActions from '../helpers/PageActions.js';
-// import URLs from '../../testData/urls.js';
-// import tabsData from '../../testData/tabs.js';
-// import messages from '../../testData/messages.js';
+import getUrl from '../testDataConfigs/urlConfig';
+import getTabs from '../testDataConfigs/tabsConfig.js';
+import getMessages from '../testDataConfigs/messagesConfig.js';
 import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
 
-// defineStep(
-//   'I verify if a new tab which url {string} {string} opens',
-//   async function (assertion: 'contains' | 'equals' | 'doesnt contain', urlKey: string) {
-//     const generic = new Generic();
-//     const pageActions = new PageActions(this.page, this.context);
-//     const secoundTab = await pageActions.getNPage(true, 2);
-//     expect.soft(await generic.isAsExpected(secoundTab?.url(), URLs[urlKey](), assertion)).toBeTruthy();
-//   }
-// );
+defineStep(
+  'I verify if a new tab which url {string} {string} opens',
+  async function (assertion: 'contains' | 'equals' | 'doesnt contain', urlKey: string) {
+    const generic = new Generic();
+    const pageActions = new PageActions(this.page, this.context);
+    const secoundTab = await pageActions.getNPage(true, 2);
+    expect.soft(await generic.isAsExpected(secoundTab?.url(), getUrl(urlKey), assertion)).toBeTruthy();
+  }
+);
 
-// defineStep(
-//   'I verify if URL {string} {string}',
-//   async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
-//     const expectedFullUrl = process.env.DEV_URL + URLs[name]();
-//     let counter = 0;
-//     let result = false;
-//     do {
-//       let pageUrl = await this.page.url();
-//       const generic = new Generic();
-//       if (assertion == 'equals') {
-//         result = await generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
-//       } else {
-//         result = await generic.isAsExpected(pageUrl, URLs[name](), assertion);
-//       }
-//       if (result === true) {
-//         break;
-//       }
-//       counter++;
-//       await this.page.waitForTimeout(400);
-//     } while (counter < 2);
-//     expect.soft(result).toBeTruthy();
-//   }
-// );
+defineStep(
+  'I verify if URL {string} {string}',
+  async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
+    const expectedFullUrl = process.env.DEV_URL + getUrl(name);
+    let counter = 0;
+    let result = false;
+    do {
+      let pageUrl = await this.page.url();
+      const generic = new Generic();
+      if (assertion == 'equals') {
+        result = await generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
+      } else {
+        result = await generic.isAsExpected(pageUrl, getUrl(name), assertion);
+      }
+      if (result === true) {
+        break;
+      }
+      counter++;
+      await this.page.waitForTimeout(400);
+    } while (counter < 2);
+    expect.soft(result).toBeTruthy();
+  }
+);
 
-// defineStep('I verify the {string} tabs', async function (dataKey: string) {
-//   const pageActions = new PageActions(this.page);
-//   await pageActions.checkAmountOfElements(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
-//   await pageActions.checkLabels(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
-// });
+defineStep('I verify the {string} tabs', async function (dataKey: string) {
+  const pageActions = new PageActions(this.page);
+  const tabsData = getTabs();
+  await pageActions.checkAmountOfElements(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
+  await pageActions.checkLabels(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
+});
 
 defineStep(
   'I verify that a {string} element contains {string} image',
@@ -55,23 +56,23 @@ defineStep(
   }
 );
 
-// defineStep(
-//   'I verify that a {string} element with {string} text {string} visible',
-//   async function (elementType: string, text: string, visibility: string) {
-//     const message = messages[text];
-//     if (message) {
-//       text = message;
-//     }
-//     const element = await this.page.locator(elementType).filter({ hasText: text }).first();
-//     if (visibility == 'is') {
-//       await expect.soft(element, `${elementType} element with text - ${text} - should be visible`).toBeVisible();
-//     } else {
-//       await expect
-//         .soft(element, `${elementType} element with text - ${text} - should not be visible`)
-//         .not.toBeVisible();
-//     }
-//   }
-// );
+defineStep(
+  'I verify that a {string} element with {string} text {string} visible',
+  async function (elementType: string, text: string, visibility: string) {
+    const message = getMessages()[text];
+    if (message) {
+      text = message;
+    }
+    const element = await this.page.locator(elementType).filter({ hasText: text }).first();
+    if (visibility == 'is') {
+      await expect.soft(element, `${elementType} element with text - ${text} - should be visible`).toBeVisible();
+    } else {
+      await expect
+        .soft(element, `${elementType} element with text - ${text} - should not be visible`)
+        .not.toBeVisible();
+    }
+  }
+);
 
 defineStep('I verify the {string}, version: {string} data', async function (name: string, version: string) {
   const pageActions = new PageActions(this.page);

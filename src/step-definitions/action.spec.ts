@@ -1,8 +1,8 @@
 import { defineStep } from '@cucumber/cucumber';
-// import urls from '../../testData/urls.js';
 import PageActions from '../helpers/PageActions.js';
 import Generic from '../helpers/Generic.js';
 import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
+import getUrl from '../testDataConfigs/urlConfig.js';
 
 defineStep(
   'I get a part of the URL based on {string} regular expression and save it as {string}',
@@ -21,22 +21,24 @@ defineStep(
   }
 );
 
-// defineStep('I open {string} page', async function (page: string) {
-//   const pageActions = new PageActions(this.page);
-//   const baseUrl = process.env.DEV_URL as string;
-//   const savedURL = process.env[page];
-//   let url = savedURL || page;
-//   if (urls.hasOwnProperty(page)) {
-//     url = baseUrl + urls[page]();
-//   }
-//   if (url !== '') {
-//     await this.page.goto(url);
-//   } else {
-//     console.error(`Error: Step - I open ${page} page - was called but the page url was empty`);
-//   }
-//   await this.page.goto(url);
-//   await pageActions.waitForPageToLoad();
-// });
+defineStep('I open {string} page', async function (page: string) {
+  const pageActions = new PageActions(this.page);
+  const baseUrl = getUrl('main'); 
+  const pageUrl = getUrl(page);
+  const savedURL = process.env[page];
+  let url = savedURL || page;
+  if (pageUrl) {
+    url = baseUrl + pageUrl;
+  }
+  if (url !== '') {
+    await this.page.goto(url);
+  } else {
+    console.error(`Error: Step - I open ${page} page - was called but the page url was empty`);
+    return;
+  }
+  await pageActions.waitForPageToLoad();
+  await this.page.waitForURL(url);
+});
 
 defineStep('I go back in the browser', async function () {
   await this.page.goBack();

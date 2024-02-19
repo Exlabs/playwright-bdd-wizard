@@ -1,0 +1,35 @@
+{
+  "name": "playwright-bdd-wizard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "bin": {
+    "bdd-tests": "npx bddgen && npx playwright test",
+    "bdd-tests-headed": "npx bddgen && npx playwright test --headed"
+  },
+  "scripts": {
+    "bdd-tests": "npx bddgen && npx playwright test",
+    "bdd-tests-headed": "npx bddgen && npx playwright test --headed",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "build": "tsc",
+    "format-and-build": "npm run format && npm run build",
+    "postinstall": "node postinstallScript.ts"
+  },
+  "keywords": [  
+    "TypeScript",
+    "Playwright",
+    "BDD",
+    "Testing",
+    "Automation"],
+  "author": "Krzysztof Kolodzinski",
+  "license": "ISC",
+  "dependencies": {
+    "@cucumber/cucumber": "^9.6.0",
+    "@types/node": "^20.14.9",
+    "playwright-bdd": "^1.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.45.0",
+    "prettier": "^3.3.2"
+  }
+}

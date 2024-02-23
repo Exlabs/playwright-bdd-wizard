@@ -1,5 +1,4 @@
 type URLsType = { [key: string]: () => string };
-
 let urlMap: URLsType = {};
 
 export function configureUrls(urls: URLsType) {

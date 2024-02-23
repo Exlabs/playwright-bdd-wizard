@@ -1,6 +1,6 @@
 *.html
 *.json
-
+dist/
 .prettierrc
 .features-gen
 test-results

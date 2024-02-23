@@ -1,10 +1,11 @@
 type tabsType = { [key: string]: { locator: string; labels: string[] } };
-let tabs: tabsType = {};
+let tabsMap: tabsType = {};
 
 export function configureTabs(tabs: tabsType) {
-  tabs = tabs;
+  tabsMap = tabs;
 }
 
-export default function getTabs(): tabsType {
+export default function getTabs(key: string): { locator: string; labels: string[] } {
+  const tabs = tabsMap[key];
   return tabs;
 }

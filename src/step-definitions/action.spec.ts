@@ -23,7 +23,7 @@ defineStep(
 
 defineStep('I open {string} page', async function (page: string) {
   const pageActions = new PageActions(this.page);
-  const baseUrl = getUrl('main'); 
+  const baseUrl = getUrl('main');
   const pageUrl = getUrl(page);
   const savedURL = process.env[page];
   let url = savedURL || page;

@@ -7,15 +7,14 @@ function configureEntitiesData(entitiesData) {
 }
 exports.configureEntitiesData = configureEntitiesData;
 function getEntityData(name, version) {
-    var _a, _b;
     const entities = Object.keys(entityDataMap);
     for (const entity of entities) {
-        if ((_b = (_a = entityDataMap === null || entityDataMap === void 0 ? void 0 : entityDataMap[entity]) === null || _a === void 0 ? void 0 : _a[name]) === null || _b === void 0 ? void 0 : _b[version]) {
-            return entityDataMap[entity][name][version];
-        }
-        else {
-            return {};
+        const entityVersions = entityDataMap[entity][name];
+        if (entityVersions && entityVersions[version]) {
+            return entityVersions[version];
         }
     }
+    console.error(`Didn't find any entity data with name: ${name}, version: ${version}`);
+    return {};
 }
 exports.default = getEntityData;

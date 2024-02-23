@@ -19,9 +19,15 @@ const PageActions_js_1 = __importDefault(require("../helpers/PageActions.js"));
 const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/ProcessEnvironmentVariables.js"));
 (0, cucumber_1.defineStep)('I {string} the {string} element that contains {string}', function (action, field, text) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log(" 1 clicking the element");
         const element = yield this.page.locator(field).filter({ containsText: text }).first();
+        console.log(" 2 clicking the element");
+        console.log("element", element);
         if (action === 'click') {
+            console.log(" 3 clicking the element");
             yield element.click();
+            console.log(" 4 clicking the element");
+            yield this.page.waitForTimeout(3000);
         }
         else {
             yield element.dispatchEvent('click');

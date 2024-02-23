@@ -18,6 +18,7 @@ Object.defineProperty(exports, "defineStep", { enumerable: true, get: function (
 const PageActions_1 = __importDefault(require("../helpers/PageActions"));
 (0, cucumber_1.defineStep)('I fill in the {string}, version: {string} data', function (name, version) {
     return __awaiter(this, void 0, void 0, function* () {
+        console.log("im doing the i fill in step");
         const pageActions = new PageActions_1.default(this.page);
         yield pageActions.fillInFormData(name, parseInt(version));
     });

@@ -122,6 +122,7 @@ export default class PageActions {
 
   async fillInFormData(name: string, version: number) {
     const data = getEntityData(name, version);
+    console.log("starting to fill")
     let nameSaved = false;
     for (const key in data) {
       if (!nameSaved) {
@@ -131,7 +132,9 @@ export default class PageActions {
       const fieldLocator = this.page.getByLabel(key);
       if ((await fieldLocator.getAttribute('role')) === 'combobox') {
         await this.fillADropDown(fieldLocator, data[key]);
+        console.log("fill in")
       } else {
+        console.log("fill in")
         await fieldLocator.fill(data[key]);
       }
       await this.page.waitForTimeout(150);

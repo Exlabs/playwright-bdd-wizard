@@ -9,5 +9,5 @@ type entititesDataType = {
 export declare function configureEntitiesData(entitiesData: entititesDataType): void;
 export default function getEntityData(name: string, version: number): {
     [key: string]: string;
-} | undefined;
+};
 export {};

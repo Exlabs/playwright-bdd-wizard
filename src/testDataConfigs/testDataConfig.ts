@@ -9,10 +9,11 @@ export function configureEntitiesData(entitiesData: entititesDataType) {
 export default function getEntityData(name: string, version: number) {
   const entities = Object.keys(entityDataMap);
   for (const entity of entities) {
-    if (entityDataMap?.[entity]?.[name]?.[version]) {
-      return entityDataMap[entity][name][version];
-    } else {
-      return {};
+    const entityVersions = entityDataMap[entity][name];
+    if (entityVersions && entityVersions[version]) {
+      return entityVersions[version];
     }
   }
+  console.error(`Didn't find any entity data with name: ${name}, version: ${version}`);
+  return {};
 }

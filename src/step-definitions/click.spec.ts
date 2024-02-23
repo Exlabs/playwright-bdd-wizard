@@ -5,9 +5,15 @@ import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.
 defineStep(
   'I {string} the {string} element that contains {string}',
   async function (action: 'click' | 'dispatch click', field: string, text: string) {
+    console.log(" 1 clicking the element")
     const element = await this.page.locator(field).filter({ containsText: text }).first();
+    console.log(" 2 clicking the element")
+    console.log("element", element)
     if (action === 'click') {
+      console.log(" 3 clicking the element")
       await element.click();
+      console.log(" 4 clicking the element")
+      await this.page.waitForTimeout(3000)
     } else {
       await element.dispatchEvent('click');
     }

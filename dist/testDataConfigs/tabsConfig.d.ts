@@ -5,5 +5,5 @@ type tabsType = {
     };
 };
 export declare function configureTabs(tabs: tabsType): void;
-export default function getTabs(): tabsType;
+export default function getTabs(key: string): any;
 export {};

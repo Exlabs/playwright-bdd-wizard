@@ -56,9 +56,9 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 (0, cucumber_1.defineStep)('I verify the {string} tabs', function (dataKey) {
     return __awaiter(this, void 0, void 0, function* () {
         const pageActions = new PageActions_js_1.default(this.page);
-        const tabsData = (0, tabsConfig_js_1.default)();
-        yield pageActions.checkAmountOfElements(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
-        yield pageActions.checkLabels(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
+        const tabsData = (0, tabsConfig_js_1.default)(dataKey);
+        yield pageActions.checkAmountOfElements(tabsData['locator'], tabsData['labels']);
+        yield pageActions.checkLabels(tabsData['locator'], tabsData['labels']);
     });
 });
 (0, cucumber_1.defineStep)('I verify that a {string} element contains {string} image', function (element, text) {
@@ -69,7 +69,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I verify that a {string} element with {string} text {string} visible', function (elementType, text, visibility) {
     return __awaiter(this, void 0, void 0, function* () {
-        const message = (0, messagesConfig_js_1.default)()[text];
+        const message = (0, messagesConfig_js_1.default)(text);
         if (message) {
             text = message;
         }

@@ -43,9 +43,9 @@ defineStep(
 
 defineStep('I verify the {string} tabs', async function (dataKey: string) {
   const pageActions = new PageActions(this.page);
-  const tabsData = getTabs();
-  await pageActions.checkAmountOfElements(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
-  await pageActions.checkLabels(tabsData[dataKey]['locator'], tabsData[dataKey]['labels']);
+  const tabsData = getTabs(dataKey);
+  await pageActions.checkAmountOfElements(tabsData['locator'], tabsData['labels']);
+  await pageActions.checkLabels(tabsData['locator'], tabsData['labels']);
 });
 
 defineStep(
@@ -59,7 +59,7 @@ defineStep(
 defineStep(
   'I verify that a {string} element with {string} text {string} visible',
   async function (elementType: string, text: string, visibility: string) {
-    const message = getMessages()[text];
+    const message = getMessages(text);
     if (message) {
       text = message;
     }

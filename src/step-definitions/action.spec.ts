@@ -30,7 +30,7 @@ defineStep('I open {string} page', async function (page: string) {
     await this.page.goto(savedURL);
     return;
   }
-  if (page.includes('http')) {
+  if (page.includes('http') || page.includes('www')) {
     await this.page.goto(page);
     return;
   }

@@ -43,7 +43,7 @@ const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"
             yield this.page.goto(savedURL);
             return;
         }
-        if (page.includes('http') || page.includes('www')) {
+        if (page.includes('http')) {
             yield this.page.goto(page);
             return;
         }

@@ -37,12 +37,14 @@ defineStep('I open {string} page', async function (page: string) {
   let url = '';
   if (pageUrl.includes('http')) {
     url = pageUrl;
-  } else if (pageUrl && !pageUrl.includes('http')) {
-    url = baseUrl + pageUrl;
   } else {
+    url = baseUrl + pageUrl;
+  }
+  if (url === '') {
     console.error(`Error: Step - I open ${page} page`);
     return;
   }
+  await this.page.goto(url);
   await pageActions.waitForPageToLoad();
   await this.page.waitForURL(url);
 });

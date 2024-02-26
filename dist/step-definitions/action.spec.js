@@ -51,13 +51,14 @@ const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"
         if (pageUrl.includes('http')) {
             url = pageUrl;
         }
-        else if (pageUrl && !pageUrl.includes('http')) {
+        else {
             url = baseUrl + pageUrl;
         }
-        else {
+        if (url === '') {
             console.error(`Error: Step - I open ${page} page`);
             return;
         }
+        yield this.page.goto(url);
         yield pageActions.waitForPageToLoad();
         yield this.page.waitForURL(url);
     });

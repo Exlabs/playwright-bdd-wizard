@@ -27,11 +27,10 @@ defineStep('I open {string} page', async function (page: string) {
   const pageUrl = getUrl(page);
   const savedURL = process.env[page];
   let url = savedURL || page;
-  if (pageUrl) {
+  if (pageUrl.includes('http')) {
+    url = pageUrl;
+  } else if (pageUrl) {
     url = baseUrl + pageUrl;
-    if(!pageUrl.includes('http')) {
-      url = url + pageUrl;
-    }
   }
   if (url !== '') {
     await this.page.goto(url);

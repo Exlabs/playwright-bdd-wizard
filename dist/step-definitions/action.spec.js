@@ -40,7 +40,10 @@ const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"
         const pageUrl = (0, urlConfig_js_1.default)(page);
         const savedURL = process.env[page];
         let url = savedURL || page;
-        if (pageUrl) {
+        if (pageUrl.includes('http')) {
+            url = pageUrl;
+        }
+        else if (pageUrl) {
             url = baseUrl + pageUrl;
         }
         if (url !== '') {

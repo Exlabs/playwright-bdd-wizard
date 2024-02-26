@@ -26,16 +26,21 @@ defineStep('I open {string} page', async function (page: string) {
   const baseUrl = getUrl('main');
   const pageUrl = getUrl(page);
   const savedURL = process.env[page];
-  let url = savedURL || page;
+  if (savedURL) {
+    await this.page.goto(savedURL);
+    return;
+  }
+  if (page.includes('http')) {
+    await this.page.goto(page);
+    return;
+  }
+  let url = '';
   if (pageUrl.includes('http')) {
     url = pageUrl;
   } else if (pageUrl || !pageUrl.includes('http')) {
     url = baseUrl + pageUrl;
-  }
-  if (url !== '') {
-    await this.page.goto(url);
   } else {
-    console.error(`Error: Step - I open ${page} page - was called but the page url was empty`);
+    console.error(`Error: Step - I open ${page} page`);
     return;
   }
   await pageActions.waitForPageToLoad();

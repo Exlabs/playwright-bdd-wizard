@@ -39,18 +39,23 @@ const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"
         const baseUrl = (0, urlConfig_js_1.default)('main');
         const pageUrl = (0, urlConfig_js_1.default)(page);
         const savedURL = process.env[page];
-        let url = savedURL || page;
+        if (savedURL) {
+            yield this.page.goto(savedURL);
+            return;
+        }
+        if (page.includes('http')) {
+            yield this.page.goto(page);
+            return;
+        }
+        let url = '';
         if (pageUrl.includes('http')) {
             url = pageUrl;
         }
         else if (pageUrl || !pageUrl.includes('http')) {
             url = baseUrl + pageUrl;
         }
-        if (url !== '') {
-            yield this.page.goto(url);
-        }
         else {
-            console.error(`Error: Step - I open ${page} page - was called but the page url was empty`);
+            console.error(`Error: Step - I open ${page} page`);
             return;
         }
         yield pageActions.waitForPageToLoad();

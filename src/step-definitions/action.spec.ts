@@ -29,6 +29,9 @@ defineStep('I open {string} page', async function (page: string) {
   let url = savedURL || page;
   if (pageUrl) {
     url = baseUrl + pageUrl;
+    if(!pageUrl.includes('http')) {
+      url = url + pageUrl;
+    }
   }
   if (url !== '') {
     await this.page.goto(url);

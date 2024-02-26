@@ -2,7 +2,6 @@ import { defineStep } from '@cucumber/cucumber';
 import PageActions from '../helpers/PageActions';
 
 defineStep('I fill in the {string}, version: {string} data', async function (name: string, version: string) {
-  console.log("im doing the i fill in step")
   const pageActions = new PageActions(this.page);
   await pageActions.fillInFormData(name, parseInt(version));
 });

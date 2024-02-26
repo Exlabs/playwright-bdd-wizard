@@ -142,7 +142,6 @@ class PageActions {
     fillInFormData(name, version) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = (0, testDataConfig_js_1.default)(name, version);
-            console.log("starting to fill");
             let nameSaved = false;
             for (const key in data) {
                 if (!nameSaved) {
@@ -152,10 +151,8 @@ class PageActions {
                 const fieldLocator = this.page.getByLabel(key);
                 if ((yield fieldLocator.getAttribute('role')) === 'combobox') {
                     yield this.fillADropDown(fieldLocator, data[key]);
-                    console.log("fill in");
                 }
                 else {
-                    console.log("fill in");
                     yield fieldLocator.fill(data[key]);
                 }
                 yield this.page.waitForTimeout(150);

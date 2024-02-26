@@ -29,7 +29,7 @@ defineStep('I open {string} page', async function (page: string) {
   let url = savedURL || page;
   if (pageUrl.includes('http')) {
     url = pageUrl;
-  } else if (pageUrl) {
+  } else if (pageUrl || !pageUrl.includes('http')) {
     url = baseUrl + pageUrl;
   }
   if (url !== '') {

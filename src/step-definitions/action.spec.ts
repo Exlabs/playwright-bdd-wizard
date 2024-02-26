@@ -37,7 +37,7 @@ defineStep('I open {string} page', async function (page: string) {
   let url = '';
   if (pageUrl.includes('http')) {
     url = pageUrl;
-  } else if (pageUrl || !pageUrl.includes('http')) {
+  } else if (pageUrl && !pageUrl.includes('http')) {
     url = baseUrl + pageUrl;
   } else {
     console.error(`Error: Step - I open ${page} page`);

@@ -1,5 +1,5 @@
-type entityDataType = { [key: string]: { [key: string]: string }[] };
-type entititesDataType = { [key: string]: entityDataType };
+export type entityDataType = { [key: string]: { [key: string]: string }[] };
+export type entititesDataType = { [key: string]: entityDataType };
 let entityDataMap: entititesDataType = {};
 
 export function configureEntitiesData(entitiesData: entititesDataType) {

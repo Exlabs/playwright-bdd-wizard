@@ -1,4 +1,4 @@
-type tabsType = { [key: string]: { locator: string; labels: string[] } };
+export type tabsType = { [key: string]: { locator: string; labels: string[] } };
 let tabsMap: tabsType = {};
 
 export function configureTabs(tabs: tabsType) {

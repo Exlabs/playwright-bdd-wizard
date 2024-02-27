@@ -1,4 +1,4 @@
-type tabsType = {
+export type tabsType = {
     [key: string]: {
         locator: string;
         labels: string[];
@@ -6,4 +6,3 @@ type tabsType = {
 };
 export declare function configureTabs(tabs: tabsType): void;
 export default function getTabs(key: string): any;
-export {};

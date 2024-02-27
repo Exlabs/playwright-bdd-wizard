@@ -1,4 +1,4 @@
-let loadingMessages: string[] = [];
+export let loadingMessages: string[] = [];
 
 export function configureLoadingMessages(messages: string[]) {
   loadingMessages = messages;

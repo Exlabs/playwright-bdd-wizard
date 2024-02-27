@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.configureLoadingMessages = void 0;
-let loadingMessages = [];
+exports.configureLoadingMessages = exports.loadingMessages = void 0;
+exports.loadingMessages = [];
 function configureLoadingMessages(messages) {
-    loadingMessages = messages;
+    exports.loadingMessages = messages;
 }
 exports.configureLoadingMessages = configureLoadingMessages;
 function getLoadingMessages() {
-    return loadingMessages;
+    return exports.loadingMessages;
 }
 exports.default = getLoadingMessages;

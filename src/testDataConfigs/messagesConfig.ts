@@ -1,4 +1,4 @@
-type messagesType = { [key: string]: string };
+export type messagesType = { [key: string]: string };
 let messagesMap: messagesType = {};
 
 export function configureMessages(messages: messagesType) {

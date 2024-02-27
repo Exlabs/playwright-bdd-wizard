@@ -2,7 +2,6 @@ import { defineStep } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
 import Generic from '../helpers/Generic.js';
 import PageActions from '../helpers/PageActions.js';
-import getUrl from '../testDataConfigs/urlConfig';
 import getTabs from '../testDataConfigs/tabsConfig.js';
 import getMessages from '../testDataConfigs/messagesConfig.js';
 import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
@@ -11,9 +10,10 @@ defineStep(
   'I verify if a new tab which url {string} {string} opens',
   async function (assertion: 'contains' | 'equals' | 'doesnt contain', urlKey: string) {
     const generic = new Generic();
+    const userUrl = await generic.getUrlBasedOnUserInput(urlKey);
     const pageActions = new PageActions(this.page, this.context);
     const secoundTab = await pageActions.getNPage(true, 2);
-    expect.soft(await generic.isAsExpected(secoundTab?.url(), getUrl(urlKey), assertion)).toBeTruthy();
+    expect.soft(await generic.isAsExpected(secoundTab?.url(), userUrl, assertion)).toBeTruthy();
   }
 );
 
@@ -30,7 +30,7 @@ defineStep(
       if (assertion == 'equals') {
         result = await generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
       } else {
-        result = await generic.isAsExpected(pageUrl, getUrl(name), assertion);
+        result = await generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
       }
       if (result === true) {
         break;

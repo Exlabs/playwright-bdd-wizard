@@ -18,16 +18,16 @@ Object.defineProperty(exports, "defineStep", { enumerable: true, get: function (
 const test_1 = require("@playwright/test");
 const Generic_js_1 = __importDefault(require("../helpers/Generic.js"));
 const PageActions_js_1 = __importDefault(require("../helpers/PageActions.js"));
-const urlConfig_1 = __importDefault(require("../testDataConfigs/urlConfig"));
 const tabsConfig_js_1 = __importDefault(require("../testDataConfigs/tabsConfig.js"));
 const messagesConfig_js_1 = __importDefault(require("../testDataConfigs/messagesConfig.js"));
 const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/ProcessEnvironmentVariables.js"));
 (0, cucumber_1.defineStep)('I verify if a new tab which url {string} {string} opens', function (assertion, urlKey) {
     return __awaiter(this, void 0, void 0, function* () {
         const generic = new Generic_js_1.default();
+        const userUrl = yield generic.getUrlBasedOnUserInput(urlKey);
         const pageActions = new PageActions_js_1.default(this.page, this.context);
         const secoundTab = yield pageActions.getNPage(true, 2);
-        test_1.expect.soft(yield generic.isAsExpected(secoundTab === null || secoundTab === void 0 ? void 0 : secoundTab.url(), (0, urlConfig_1.default)(urlKey), assertion)).toBeTruthy();
+        test_1.expect.soft(yield generic.isAsExpected(secoundTab === null || secoundTab === void 0 ? void 0 : secoundTab.url(), userUrl, assertion)).toBeTruthy();
     });
 });
 (0, cucumber_1.defineStep)('I verify if URL {string} {string}', function (assertion, name) {
@@ -43,7 +43,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
                 result = yield generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
             }
             else {
-                result = yield generic.isAsExpected(pageUrl, (0, urlConfig_1.default)(name), assertion);
+                result = yield generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
             }
             if (result === true) {
                 break;

@@ -33,13 +33,16 @@ class Generic {
             const baseUrl = (0, urlConfig_js_1.default)('main');
             const pageUrl = (0, urlConfig_js_1.default)(page);
             const savedURL = process.env[page];
-            if (savedURL) {
-                return savedURL;
-            }
-            if (page.includes('http')) {
-                return page;
-            }
             let url = '';
+            if (savedURL) {
+                url = savedURL;
+            }
+            else if (page.includes('http')) {
+                url = page;
+            }
+            else if (page === 'main') {
+                url = baseUrl;
+            }
             if (pageUrl.includes('http')) {
                 url = pageUrl;
             }

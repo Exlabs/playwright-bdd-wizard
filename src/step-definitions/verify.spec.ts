@@ -22,6 +22,7 @@ defineStep(
   async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
     const generic = new Generic();
     const expectedFullUrl = await generic.getUrlBasedOnUserInput(name);
+    console.log('expectedFullUrl', expectedFullUrl);
     let counter = 0;
     let result = false;
     do {

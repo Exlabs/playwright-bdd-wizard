@@ -15,13 +15,14 @@ export default class Generic {
     const baseUrl = getUrl('main');
     const pageUrl = getUrl(page);
     const savedURL = process.env[page];
-    if (savedURL) {
-      return savedURL;
-    }
-    if (page.includes('http')) {
-      return page;
-    }
     let url = '';
+    if (savedURL) {
+      url = savedURL;
+    } else if (page.includes('http')) {
+      url = page;
+    } else if (page === 'main') {
+      url = baseUrl;
+    }
     if (pageUrl.includes('http')) {
       url = pageUrl;
     } else {

@@ -34,6 +34,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
     return __awaiter(this, void 0, void 0, function* () {
         const generic = new Generic_js_1.default();
         const expectedFullUrl = yield generic.getUrlBasedOnUserInput(name);
+        console.log('expectedFullUrl', expectedFullUrl);
         let counter = 0;
         let result = false;
         do {

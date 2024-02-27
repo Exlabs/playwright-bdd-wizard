@@ -34,7 +34,6 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
     return __awaiter(this, void 0, void 0, function* () {
         const generic = new Generic_js_1.default();
         const expectedFullUrl = yield generic.getUrlBasedOnUserInput(name);
-        console.log('expectedFullUrl', expectedFullUrl);
         let counter = 0;
         let result = false;
         do {
@@ -52,7 +51,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
             counter++;
             yield this.page.waitForTimeout(400);
         } while (counter < 2);
-        test_1.expect.soft(result).toBeTruthy();
+        test_1.expect.soft(result, `The URL doesnt ${assertion} ${name} - ${name} URL was ${expectedFullUrl}`).toBeTruthy();
     });
 });
 (0, cucumber_1.defineStep)('I verify the {string} tabs', function (dataKey) {

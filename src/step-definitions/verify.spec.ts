@@ -22,7 +22,6 @@ defineStep(
   async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
     const generic = new Generic();
     const expectedFullUrl = await generic.getUrlBasedOnUserInput(name);
-    console.log('expectedFullUrl', expectedFullUrl);
     let counter = 0;
     let result = false;
     do {
@@ -39,7 +38,7 @@ defineStep(
       counter++;
       await this.page.waitForTimeout(400);
     } while (counter < 2);
-    expect.soft(result).toBeTruthy();
+    expect.soft(result, `The URL doesnt ${assertion} ${name} - ${name} URL was ${expectedFullUrl}`).toBeTruthy();
   }
 );
 

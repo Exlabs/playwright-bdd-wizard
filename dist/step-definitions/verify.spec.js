@@ -32,7 +32,8 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I verify if URL {string} {string}', function (assertion, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const expectedFullUrl = process.env.DEV_URL + (0, urlConfig_1.default)(name);
+        const generic = new Generic_js_1.default();
+        const expectedFullUrl = yield generic.getUrlBasedOnUserInput(name);
         let counter = 0;
         let result = false;
         do {

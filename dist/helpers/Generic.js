@@ -8,7 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
+const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"));
 class Generic {
     getSubString(string, regExp) {
         var _a;
@@ -22,6 +26,30 @@ class Generic {
                 console.error('An error occurred while extracting substring:', error);
                 return undefined;
             }
+        });
+    }
+    getUrlBasedOnUserInput(page) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const baseUrl = (0, urlConfig_js_1.default)('main');
+            const pageUrl = (0, urlConfig_js_1.default)(page);
+            const savedURL = process.env[page];
+            if (savedURL) {
+                return savedURL;
+            }
+            if (page.includes('http')) {
+                return page;
+            }
+            let url = '';
+            if (pageUrl.includes('http')) {
+                url = pageUrl;
+            }
+            else {
+                url = baseUrl + pageUrl;
+            }
+            if (url === '') {
+                console.error(`Error: Couldn't define the ${page} url`);
+            }
+            return url;
         });
     }
     timeDelta(startTime, timeout) {

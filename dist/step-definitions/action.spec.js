@@ -18,7 +18,6 @@ Object.defineProperty(exports, "defineStep", { enumerable: true, get: function (
 const PageActions_js_1 = __importDefault(require("../helpers/PageActions.js"));
 const Generic_js_1 = __importDefault(require("../helpers/Generic.js"));
 const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/ProcessEnvironmentVariables.js"));
-const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"));
 (0, cucumber_1.defineStep)('I get a part of the URL based on {string} regular expression and save it as {string}', function (regExp, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const url = yield this.page.url();
@@ -36,31 +35,10 @@ const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"
 (0, cucumber_1.defineStep)('I open {string} page', function (page) {
     return __awaiter(this, void 0, void 0, function* () {
         const pageActions = new PageActions_js_1.default(this.page);
-        const baseUrl = (0, urlConfig_js_1.default)('main');
-        const pageUrl = (0, urlConfig_js_1.default)(page);
-        const savedURL = process.env[page];
-        if (savedURL) {
-            yield this.page.goto(savedURL);
-            return;
-        }
-        if (page.includes('http')) {
-            yield this.page.goto(page);
-            return;
-        }
-        let url = '';
-        if (pageUrl.includes('http')) {
-            url = pageUrl;
-        }
-        else {
-            url = baseUrl + pageUrl;
-        }
-        if (url === '') {
-            console.error(`Error: Step - I open ${page} page`);
-            return;
-        }
+        const generic = new Generic_js_1.default();
+        const url = yield generic.getUrlBasedOnUserInput(page);
         yield this.page.goto(url);
         yield pageActions.waitForPageToLoad();
-        yield this.page.waitForURL(url);
     });
 });
 (0, cucumber_1.defineStep)('I go back in the browser', function () {

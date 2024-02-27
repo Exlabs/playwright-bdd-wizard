@@ -1,3 +1,4 @@
+import getUrl from '../testDataConfigs/urlConfig.js';
 export default class Generic {
   async getSubString(string: string, regExp: RegExp) {
     try {
@@ -8,6 +9,28 @@ export default class Generic {
       console.error('An error occurred while extracting substring:', error);
       return undefined;
     }
+  }
+
+  async getUrlBasedOnUserInput(page: string): Promise<string> {
+    const baseUrl = getUrl('main');
+    const pageUrl = getUrl(page);
+    const savedURL = process.env[page];
+    if (savedURL) {
+      return savedURL;
+    }
+    if (page.includes('http')) {
+      return page;
+    }
+    let url = '';
+    if (pageUrl.includes('http')) {
+      url = pageUrl;
+    } else {
+      url = baseUrl + pageUrl;
+    }
+    if (url === '') {
+      console.error(`Error: Couldn't define the ${page} url`);
+    }
+    return url;
   }
 
   async timeDelta(startTime: number, timeout: number) {

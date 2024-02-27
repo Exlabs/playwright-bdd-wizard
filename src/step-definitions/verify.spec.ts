@@ -20,7 +20,8 @@ defineStep(
 defineStep(
   'I verify if URL {string} {string}',
   async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
-    const expectedFullUrl = process.env.DEV_URL + getUrl(name);
+    const generic = new Generic();
+    const expectedFullUrl = await generic.getUrlBasedOnUserInput(name);
     let counter = 0;
     let result = false;
     do {

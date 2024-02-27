@@ -2,7 +2,6 @@ import { defineStep } from '@cucumber/cucumber';
 import PageActions from '../helpers/PageActions.js';
 import Generic from '../helpers/Generic.js';
 import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
-import getUrl from '../testDataConfigs/urlConfig.js';
 
 defineStep(
   'I get a part of the URL based on {string} regular expression and save it as {string}',
@@ -23,30 +22,10 @@ defineStep(
 
 defineStep('I open {string} page', async function (page: string) {
   const pageActions = new PageActions(this.page);
-  const baseUrl = getUrl('main');
-  const pageUrl = getUrl(page);
-  const savedURL = process.env[page];
-  if (savedURL) {
-    await this.page.goto(savedURL);
-    return;
-  }
-  if (page.includes('http')) {
-    await this.page.goto(page);
-    return;
-  }
-  let url = '';
-  if (pageUrl.includes('http')) {
-    url = pageUrl;
-  } else {
-    url = baseUrl + pageUrl;
-  }
-  if (url === '') {
-    console.error(`Error: Step - I open ${page} page`);
-    return;
-  }
+  const generic = new Generic();
+  const url = await generic.getUrlBasedOnUserInput(page);
   await this.page.goto(url);
   await pageActions.waitForPageToLoad();
-  await this.page.waitForURL(url);
 });
 
 defineStep('I go back in the browser', async function () {

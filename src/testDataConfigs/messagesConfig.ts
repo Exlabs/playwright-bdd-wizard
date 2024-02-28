@@ -1,10 +1,10 @@
-export type messagesType = { [key: string]: string };
-let messagesMap: messagesType = {};
+export type MessagesType = { [key: string]: string };
+let messagesMap: MessagesType = {};
 
-export function configureMessages(messages: messagesType) {
+export function configureMessages(messages: MessagesType) {
   messagesMap = messages;
 }
 
-export default function getMessages(key: string): string {
+export default function getMessage(key: string): string {
   return messagesMap[key];
 }

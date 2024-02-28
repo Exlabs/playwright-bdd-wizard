@@ -6,7 +6,7 @@ function configureMessages(messages) {
     messagesMap = messages;
 }
 exports.configureMessages = configureMessages;
-function getMessages(key) {
+function getMessage(key) {
     return messagesMap[key];
 }
-exports.default = getMessages;
+exports.default = getMessage;

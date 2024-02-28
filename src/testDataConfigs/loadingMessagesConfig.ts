@@ -1,9 +1,10 @@
-export let loadingMessages: string[] = [];
+export type LoadingMessagesType = string[];
+export let loadingMessages: LoadingMessagesType = [];
 
-export function configureLoadingMessages(messages: string[]) {
+export function configureLoadingMessages(messages: LoadingMessagesType) {
   loadingMessages = messages;
 }
 
-export default function getLoadingMessages(): string[] {
+export default function getLoadingMessages(): LoadingMessagesType {
   return loadingMessages;
 }

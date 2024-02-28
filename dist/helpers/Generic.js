@@ -35,6 +35,7 @@ class Generic {
             const savedURL = process.env[page];
             let url = '';
             if (savedURL) {
+                console.log('Using saved URL:', savedURL);
                 url = savedURL;
             }
             else if (page.includes('http')) {
@@ -43,7 +44,7 @@ class Generic {
             else if (page === 'main') {
                 url = baseUrl;
             }
-            if (pageUrl.includes('http')) {
+            else if (pageUrl.includes('http')) {
                 url = pageUrl;
             }
             else {

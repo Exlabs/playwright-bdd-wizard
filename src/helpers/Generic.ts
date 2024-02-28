@@ -24,7 +24,7 @@ export default class Generic {
       url = baseUrl;
     } else if (pageUrl.includes('http')) {
       url = pageUrl;
-    } else {
+    } else if (pageUrl !== '') {
       url = baseUrl + pageUrl;
     }
     if (url === '') {

@@ -29,6 +29,11 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
         }
     });
 });
+(0, cucumber_1.defineStep)('I click on the top left corner of the page', function () {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield this.page.mouse.click(0, 0);
+    });
+});
 (0, cucumber_1.defineStep)('I {string} the {string} element with {string} {string}', function (action, number, text, getBy) {
     return __awaiter(this, void 0, void 0, function* () {
         const processEnv = new ProcessEnvironmentVariables_js_1.default();

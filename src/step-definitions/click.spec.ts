@@ -15,6 +15,10 @@ defineStep(
   }
 );
 
+defineStep('I click on the top left corner of the page', async function () {
+  await this.page.mouse.click(0, 0);
+});
+
 defineStep(
   'I {string} the {string} element with {string} {string}',
   async function (

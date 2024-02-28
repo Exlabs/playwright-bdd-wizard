@@ -17,7 +17,6 @@ export default class Generic {
     const savedURL = process.env[page];
     let url = '';
     if (savedURL) {
-      console.log('Using saved URL:', savedURL);
       url = savedURL;
     } else if (page.includes('http')) {
       url = page;

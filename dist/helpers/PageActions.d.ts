@@ -1,6 +1,5 @@
 import { Page, Locator, BrowserContext } from '@playwright/test';
-import Generic from './Generic.js';
-import ProcessEnvironmentVariables from './ProcessEnvironmentVariables.js';
+import { Generic, ProcessEnvironmentVariables } from './index.js';
 export default class PageActions {
     readonly page: Page;
     readonly generic: Generic;

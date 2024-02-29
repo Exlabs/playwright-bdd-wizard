@@ -6,7 +6,7 @@ export function configureTabs(tabs: TabsType) {
   tabsMap = tabs;
 }
 
-export default function getTabs(key: string): TabType {
+export function getTabs(key: string): TabType {
   const tabs = tabsMap[key];
   return tabs;
 }

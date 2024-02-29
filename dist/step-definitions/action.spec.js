@@ -8,23 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defineStep = void 0;
 const cucumber_1 = require("@cucumber/cucumber");
 Object.defineProperty(exports, "defineStep", { enumerable: true, get: function () { return cucumber_1.defineStep; } });
-const PageActions_js_1 = __importDefault(require("../helpers/PageActions.js"));
-const Generic_js_1 = __importDefault(require("../helpers/Generic.js"));
-const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/ProcessEnvironmentVariables.js"));
+const index_js_1 = require("../helpers/index.js");
 (0, cucumber_1.defineStep)('I get a part of the URL based on {string} regular expression and save it as {string}', function (regExp, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const url = yield this.page.url();
-        const generic = new Generic_js_1.default();
+        const generic = new index_js_1.Generic();
         const value = yield generic.getSubString(url, regExp);
         if (value) {
-            const processEnv = new ProcessEnvironmentVariables_js_1.default();
+            const processEnv = new index_js_1.ProcessEnvironmentVariables();
             yield processEnv.set(name, value);
         }
         else {
@@ -34,8 +29,8 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I open {string} page', function (page) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
-        const generic = new Generic_js_1.default();
+        const pageActions = new index_js_1.PageActions(this.page);
+        const generic = new index_js_1.Generic();
         const url = yield generic.getUrlBasedOnUserInput(page);
         yield this.page.goto(url);
         yield pageActions.waitForPageToLoad();
@@ -44,26 +39,26 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 (0, cucumber_1.defineStep)('I go back in the browser', function () {
     return __awaiter(this, void 0, void 0, function* () {
         yield this.page.goBack();
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         yield pageActions.waitForPageToLoad();
     });
 });
 (0, cucumber_1.defineStep)('I save the current url as {string}', function (name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         yield pageActions.saveCurrentURLToEnvAs(name);
     });
 });
 (0, cucumber_1.defineStep)('I zoom to {string} in the browser', function (zoom) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         yield pageActions.zoom(zoom, 1800);
     });
 });
 (0, cucumber_1.defineStep)('I reload the page', function (ms) {
     return __awaiter(this, void 0, void 0, function* () {
         yield this.page.reload();
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         yield pageActions.waitForPageToLoad();
     });
 });
@@ -75,7 +70,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I wait for the page to load', function () {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         yield pageActions.waitForPageToLoad();
     });
 });

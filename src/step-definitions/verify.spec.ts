@@ -1,10 +1,7 @@
 import { defineStep } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import Generic from '../helpers/Generic.js';
-import PageActions from '../helpers/PageActions.js';
-import getTabs from '../testDataConfigs/tabsConfig.js';
-import getMessages from '../testDataConfigs/messagesConfig.js';
-import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
+import { PageActions, Generic, ProcessEnvironmentVariables } from '../helpers/index.js';
+import { getTabs, getMessage } from '../testDataConfigs/index.js';
 
 defineStep(
   'I verify if a new tab which url {string} {string} opens',
@@ -61,7 +58,7 @@ defineStep(
 defineStep(
   'I verify that a {string} element with {string} text {string} visible',
   async function (elementType: string, text: string, visibility: string) {
-    const message = getMessages(text);
+    const message = getMessage(text);
     if (message) {
       text = message;
     }

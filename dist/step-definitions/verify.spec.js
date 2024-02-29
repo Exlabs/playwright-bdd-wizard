@@ -8,31 +8,25 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.defineStep = void 0;
 const cucumber_1 = require("@cucumber/cucumber");
 Object.defineProperty(exports, "defineStep", { enumerable: true, get: function () { return cucumber_1.defineStep; } });
 const test_1 = require("@playwright/test");
-const Generic_js_1 = __importDefault(require("../helpers/Generic.js"));
-const PageActions_js_1 = __importDefault(require("../helpers/PageActions.js"));
-const tabsConfig_js_1 = __importDefault(require("../testDataConfigs/tabsConfig.js"));
-const messagesConfig_js_1 = __importDefault(require("../testDataConfigs/messagesConfig.js"));
-const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/ProcessEnvironmentVariables.js"));
+const index_js_1 = require("../helpers/index.js");
+const index_js_2 = require("../testDataConfigs/index.js");
 (0, cucumber_1.defineStep)('I verify if a new tab which url {string} {string} opens', function (assertion, urlKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const generic = new Generic_js_1.default();
+        const generic = new index_js_1.Generic();
         const userUrl = yield generic.getUrlBasedOnUserInput(urlKey);
-        const pageActions = new PageActions_js_1.default(this.page, this.context);
+        const pageActions = new index_js_1.PageActions(this.page, this.context);
         const secoundTab = yield pageActions.getNPage(true, 2);
         test_1.expect.soft(yield generic.isAsExpected(secoundTab === null || secoundTab === void 0 ? void 0 : secoundTab.url(), userUrl, assertion)).toBeTruthy();
     });
 });
 (0, cucumber_1.defineStep)('I verify if URL {string} {string}', function (assertion, name) {
     return __awaiter(this, void 0, void 0, function* () {
-        const generic = new Generic_js_1.default();
+        const generic = new index_js_1.Generic();
         const expectedFullUrl = yield generic.getUrlBasedOnUserInput(name);
         const pageUrl = yield this.page.url();
         let counter = 0;
@@ -57,8 +51,8 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I verify the {string} tabs', function (dataKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
-        const tabsData = (0, tabsConfig_js_1.default)(dataKey);
+        const pageActions = new index_js_1.PageActions(this.page);
+        const tabsData = (0, index_js_2.getTabs)(dataKey);
         yield pageActions.checkAmountOfElements(tabsData['locator'], tabsData['labels']);
         yield pageActions.checkLabels(tabsData['locator'], tabsData['labels']);
     });
@@ -71,7 +65,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I verify that a {string} element with {string} text {string} visible', function (elementType, text, visibility) {
     return __awaiter(this, void 0, void 0, function* () {
-        const message = (0, messagesConfig_js_1.default)(text);
+        const message = (0, index_js_2.getMessage)(text);
         if (message) {
             text = message;
         }
@@ -88,14 +82,14 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I verify the {string}, version: {string} data', function (name, version) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         yield pageActions.checkTheFormData(name, parseInt(version));
     });
 });
 (0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} is {string}', function (number, text, getBy, action) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
-        const processEnv = new ProcessEnvironmentVariables_js_1.default();
+        const pageActions = new index_js_1.PageActions(this.page);
+        const processEnv = new index_js_1.ProcessEnvironmentVariables();
         text = yield processEnv.getEnvVarOrDefault(text);
         const element = yield pageActions.getNElementBy(getBy, parseInt(number), text);
         const elementIsVisible = yield element.isVisible();
@@ -118,8 +112,8 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 (0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} becomes {string} during {string} seconds', function (number, text, getBy, action, timeout) {
     return __awaiter(this, void 0, void 0, function* () {
         const timeoutInMs = timeout * 1000;
-        const pageActions = new PageActions_js_1.default(this.page);
-        const processEnv = new ProcessEnvironmentVariables_js_1.default();
+        const pageActions = new index_js_1.PageActions(this.page);
+        const processEnv = new index_js_1.ProcessEnvironmentVariables();
         text = yield processEnv.getEnvVarOrDefault(text);
         const element = yield pageActions.getNElementBy(getBy, parseInt(number), text);
         const assertionMessage = `Element ${text} ${getBy} didnt become`;
@@ -139,7 +133,7 @@ const ProcessEnvironmentVariables_js_1 = __importDefault(require("../helpers/Pro
 });
 (0, cucumber_1.defineStep)('I verify that {string} field, {string} drop down option {string} available', function (fieldLabel, dropDownOption, toBeAvailable) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new PageActions_js_1.default(this.page);
+        const pageActions = new index_js_1.PageActions(this.page);
         const is_available = yield pageActions.isDropdownOptionAvailable(fieldLabel, dropDownOption);
         if (toBeAvailable == 'is') {
             test_1.expect.soft(is_available, `${dropDownOption} option is not visible in the ${fieldLabel} dropdown`).toBeTruthy();

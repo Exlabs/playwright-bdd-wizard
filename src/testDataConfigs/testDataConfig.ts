@@ -6,7 +6,7 @@ export function configureEntitiesData(entitiesData: EntitiesDataType) {
   entityDataMap = entitiesData;
 }
 
-export default function getEntityData(name: string, version: number) {
+export function getEntityData(name: string, version: number) {
   const entities = Object.keys(entityDataMap);
   for (const entity of entities) {
     const entityVersions = entityDataMap[entity][name];

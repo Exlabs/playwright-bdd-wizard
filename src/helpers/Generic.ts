@@ -1,4 +1,5 @@
-import getUrl from '../testDataConfigs/urlConfig.js';
+import { getUrl } from '../testDataConfigs/index.js';
+
 export default class Generic {
   async getSubString(string: string, regExp: RegExp) {
     try {

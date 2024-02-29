@@ -18,4 +18,4 @@ __exportStar(require("./loadingMessagesConfig"), exports);
 __exportStar(require("./testDataConfig"), exports);
 __exportStar(require("./urlConfig"), exports);
 __exportStar(require("./messagesConfig"), exports);
-__exportStar(require("./tabsConfig"), exports);
+__exportStar(require("./tabsConfig.js"), exports);

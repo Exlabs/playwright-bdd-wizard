@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.configureEntitiesData = void 0;
+exports.getEntityData = exports.configureEntitiesData = void 0;
 let entityDataMap = {};
 function configureEntitiesData(entitiesData) {
     entityDataMap = entitiesData;
@@ -17,4 +17,4 @@ function getEntityData(name, version) {
     console.error(`Didn't find any entity data with name: ${name}, version: ${version}`);
     return {};
 }
-exports.default = getEntityData;
+exports.getEntityData = getEntityData;

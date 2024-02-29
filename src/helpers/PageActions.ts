@@ -1,8 +1,6 @@
 import { Page, expect, Locator, BrowserContext } from '@playwright/test';
-import Generic from './Generic.js';
-import ProcessEnvironmentVariables from './ProcessEnvironmentVariables.js';
-import getLoadingMessages from '../testDataConfigs/loadingMessagesConfig.js';
-import getEntityData from '../testDataConfigs/testDataConfig.js';
+import { Generic, ProcessEnvironmentVariables } from './index.js';
+import { getLoadingMessages, getEntityData } from '../testDataConfigs/index.js';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;

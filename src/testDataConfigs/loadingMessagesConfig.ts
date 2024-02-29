@@ -5,6 +5,6 @@ export function configureLoadingMessages(messages: LoadingMessagesType) {
   loadingMessages = messages;
 }
 
-export default function getLoadingMessages(): LoadingMessagesType {
+export function getLoadingMessages(): LoadingMessagesType {
   return loadingMessages;
 }

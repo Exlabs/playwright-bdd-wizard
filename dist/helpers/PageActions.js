@@ -8,21 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const test_1 = require("@playwright/test");
-const Generic_js_1 = __importDefault(require("./Generic.js"));
-const ProcessEnvironmentVariables_js_1 = __importDefault(require("./ProcessEnvironmentVariables.js"));
-const loadingMessagesConfig_js_1 = __importDefault(require("../testDataConfigs/loadingMessagesConfig.js"));
-const testDataConfig_js_1 = __importDefault(require("../testDataConfigs/testDataConfig.js"));
+const index_js_1 = require("./index.js");
+const index_js_2 = require("../testDataConfigs/index.js");
 class PageActions {
     constructor(page, context) {
         this.page = page;
         this.context = context;
-        this.generic = new Generic_js_1.default();
-        this.processEnv = new ProcessEnvironmentVariables_js_1.default();
+        this.generic = new index_js_1.Generic();
+        this.processEnv = new index_js_1.ProcessEnvironmentVariables();
     }
     zoom(setting, milisecounds) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -87,7 +82,7 @@ class PageActions {
     }
     waitForMessagesToDisappear(timeout = 30000) {
         return __awaiter(this, void 0, void 0, function* () {
-            const messages = (0, loadingMessagesConfig_js_1.default)();
+            const messages = (0, index_js_2.getLoadingMessages)();
             const assertionMessage = `message stays visible for more than ${timeout}ms`;
             const startTime = Date.now();
             for (const message of messages) {
@@ -141,7 +136,7 @@ class PageActions {
     }
     fillInFormData(name, version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = (0, testDataConfig_js_1.default)(name, version);
+            const data = (0, index_js_2.getEntityData)(name, version);
             let nameSaved = false;
             for (const key in data) {
                 if (!nameSaved) {
@@ -162,7 +157,7 @@ class PageActions {
     }
     checkTheFormData(name, version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = (0, testDataConfig_js_1.default)(name, version);
+            const data = (0, index_js_2.getEntityData)(name, version);
             for (const key in data) {
                 const value = (yield this.page.getByLabel(key).getAttribute('value'));
                 test_1.expect

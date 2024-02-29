@@ -1,6 +1,5 @@
 import { defineStep } from '@cucumber/cucumber';
-import PageActions from '../helpers/PageActions.js';
-import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
+import { PageActions, ProcessEnvironmentVariables } from '../helpers/index.js';
 
 defineStep(
   'I {string} the {string} element that contains {string}',

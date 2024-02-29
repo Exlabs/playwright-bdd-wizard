@@ -1,5 +1,5 @@
 import { defineStep } from '@cucumber/cucumber';
-import PageActions from '../helpers/PageActions';
+import { PageActions } from '../helpers/index.js';
 
 defineStep('I fill in the {string}, version: {string} data', async function (name: string, version: string) {
   const pageActions = new PageActions(this.page);

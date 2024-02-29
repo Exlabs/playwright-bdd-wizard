@@ -8,11 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-const urlConfig_js_1 = __importDefault(require("../testDataConfigs/urlConfig.js"));
+const index_js_1 = require("../testDataConfigs/index.js");
 class Generic {
     getSubString(string, regExp) {
         var _a;
@@ -30,8 +27,8 @@ class Generic {
     }
     getUrlBasedOnUserInput(page) {
         return __awaiter(this, void 0, void 0, function* () {
-            const baseUrl = (0, urlConfig_js_1.default)('main');
-            const pageUrl = (0, urlConfig_js_1.default)(page);
+            const baseUrl = (0, index_js_1.getUrl)('main');
+            const pageUrl = (0, index_js_1.getUrl)(page);
             const savedURL = process.env[page];
             let url = '';
             if (savedURL) {

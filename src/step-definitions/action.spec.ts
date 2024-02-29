@@ -1,7 +1,5 @@
 import { defineStep } from '@cucumber/cucumber';
-import PageActions from '../helpers/PageActions.js';
-import Generic from '../helpers/Generic.js';
-import ProcessEnvironmentVariables from '../helpers/ProcessEnvironmentVariables.js';
+import { PageActions, Generic, ProcessEnvironmentVariables } from '../helpers/index.js';
 
 defineStep(
   'I get a part of the URL based on {string} regular expression and save it as {string}',

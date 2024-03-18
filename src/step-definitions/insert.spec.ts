@@ -1,5 +1,5 @@
 import { defineStep } from '@cucumber/cucumber';
-import { PageActions } from '../helpers/index.js';
+import { PageActions, GetByType } from '../helpers/index.js';
 
 defineStep('I fill in the {string}, version: {string} data', async function (name: string, version: string) {
   const pageActions = new PageActions(this.page);
@@ -17,7 +17,7 @@ defineStep(
     text: string,
     number: string,
     elementData: string,
-    getBy: 'text' | 'label' | 'placeholder' | 'role' | 'CSS'
+    getBy: GetByType
   ) {
     const pageActions = new PageActions(this.page);
     const element = await pageActions.getNElementBy(getBy, parseInt(number), elementData);

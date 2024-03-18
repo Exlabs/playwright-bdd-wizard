@@ -1,5 +1,6 @@
 import { Page, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
+export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'CSS';
 export default class PageActions {
     readonly page: Page;
     readonly generic: Generic;
@@ -7,7 +8,7 @@ export default class PageActions {
     private context?;
     constructor(page: Page, context?: BrowserContext);
     zoom(setting: string, milisecounds: number): Promise<void>;
-    getNElementBy(getBy: 'text' | 'label' | 'placeholder' | 'role' | 'CSS', N: number, text: any): Promise<Locator>;
+    getNElementBy(getBy: GetByType, N: number, text: any): Promise<Locator>;
     getNPage(closeIt: boolean, N: number): Promise<Page>;
     isElementBecomingVisible(elementLocator: Locator, waitToBeVisible: boolean, timeout: number): Promise<boolean>;
     waitForMessagesToDisappear(timeout?: number): Promise<void>;

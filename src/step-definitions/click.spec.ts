@@ -1,5 +1,5 @@
 import { defineStep } from '@cucumber/cucumber';
-import { PageActions, ProcessEnvironmentVariables } from '../helpers/index.js';
+import { PageActions, ProcessEnvironmentVariables, GetByType } from '../helpers/index.js';
 
 defineStep(
   'I {string} the {string} element that contains {string}',
@@ -20,12 +20,7 @@ defineStep('I click on the top left corner of the page', async function () {
 
 defineStep(
   'I {string} the {string} element with {string} {string}',
-  async function (
-    action: 'click' | 'dispatch click',
-    number: string,
-    text: string,
-    getBy: 'text' | 'label' | 'placeholder' | 'role' | 'CSS'
-  ) {
+  async function (action: 'click' | 'dispatch click', number: string, text: string, getBy: GetByType) {
     const processEnv = new ProcessEnvironmentVariables();
     text = await processEnv.getEnvVarOrDefault(text);
     const pageActions = new PageActions(this.page, this.context);

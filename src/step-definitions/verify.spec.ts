@@ -1,6 +1,6 @@
 import { defineStep } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { PageActions, Generic, ProcessEnvironmentVariables } from '../helpers/index.js';
+import { PageActions, Generic, ProcessEnvironmentVariables, GetByType } from '../helpers/index.js';
 import { getTabs, getMessage } from '../testDataConfigs/index.js';
 
 defineStep(
@@ -79,8 +79,8 @@ defineStep(
   async function (
     number: string,
     text: string,
-    getBy: 'text' | 'label' | 'placeholder',
-    action: 'visible' | 'not visible' | 'editable' | 'disabled'
+    getBy: GetByType,
+    action: 'visible' | 'not visible' | 'editable' | 'disabled' | 'enabled'
   ) {
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();
@@ -100,19 +100,16 @@ defineStep(
         break;
       case 'disabled':
         expect.soft(element, `${assertionMessage} disabled`).toBeDisabled();
+        break;
+      case 'enabled':
+        expect.soft(element, `${assertionMessage} enabled`).toBeEnabled();
     }
   }
 );
 
 defineStep(
   'I verify that {string} element with {string} {string} becomes {string} during {string} seconds',
-  async function (
-    number: string,
-    text: string,
-    getBy: 'text' | 'label' | 'placeholder',
-    action: 'visible' | 'hidden',
-    timeout: number
-  ) {
+  async function (number: string, text: string, getBy: GetByType, action: 'visible' | 'hidden', timeout: number) {
     const timeoutInMs = timeout * 1000;
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();

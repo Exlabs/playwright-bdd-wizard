@@ -1,6 +1,7 @@
 import { Page, expect, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
 import { getLoadingMessages, getEntityData } from '../testDataConfigs/index.js';
+export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'CSS';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
@@ -19,7 +20,7 @@ export default class PageActions {
     await this.page.waitForTimeout(milisecounds);
   }
 
-  async getNElementBy(getBy: 'text' | 'label' | 'placeholder' | 'role' | 'CSS', N: number, text: any) {
+  async getNElementBy(getBy: GetByType, N: number, text: any) {
     const sequence = Number(N) - 1;
     switch (getBy) {
       case 'text':

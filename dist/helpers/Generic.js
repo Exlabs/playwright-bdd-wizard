@@ -46,7 +46,10 @@ class Generic {
             else if (pageUrl !== '') {
                 url = baseUrl + pageUrl;
             }
-            if (url === '') {
+            else if (page !== '') {
+                url = baseUrl + page;
+            }
+            else {
                 console.error(`Error: Couldn't define the ${page} url`);
             }
             return url;

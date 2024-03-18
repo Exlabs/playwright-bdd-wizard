@@ -27,17 +27,12 @@ const index_js_2 = require("../testDataConfigs/index.js");
 (0, cucumber_1.defineStep)('I verify if URL {string} {string}', function (assertion, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const generic = new index_js_1.Generic();
-        const expectedFullUrl = yield generic.getUrlBasedOnUserInput(name);
+        const url = yield generic.getUrlBasedOnUserInput(name);
         const pageUrl = yield this.page.url();
         let counter = 0;
         let result = false;
         do {
-            if (assertion == 'equals') {
-                result = yield generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
-            }
-            else {
-                result = yield generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
-            }
+            result = yield generic.isAsExpected(pageUrl, url, assertion);
             if (result === true) {
                 break;
             }
@@ -45,7 +40,7 @@ const index_js_2 = require("../testDataConfigs/index.js");
             yield this.page.waitForTimeout(400);
         } while (counter < 2);
         test_1.expect
-            .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${expectedFullUrl}`)
+            .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${url}`)
             .toBeTruthy();
     });
 });
@@ -106,6 +101,9 @@ const index_js_2 = require("../testDataConfigs/index.js");
                 break;
             case 'disabled':
                 test_1.expect.soft(element, `${assertionMessage} disabled`).toBeDisabled();
+                break;
+            case 'enabled':
+                test_1.expect.soft(element, `${assertionMessage} enabled`).toBeEnabled();
         }
     });
 });

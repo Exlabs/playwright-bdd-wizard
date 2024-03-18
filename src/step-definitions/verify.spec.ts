@@ -18,16 +18,12 @@ defineStep(
   'I verify if URL {string} {string}',
   async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
     const generic = new Generic();
-    const expectedFullUrl = await generic.getUrlBasedOnUserInput(name);
+    const url = await generic.getUrlBasedOnUserInput(name);
     const pageUrl = await this.page.url();
     let counter = 0;
     let result = false;
     do {
-      if (assertion == 'equals') {
-        result = await generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
-      } else {
-        result = await generic.isAsExpected(pageUrl, expectedFullUrl, assertion);
-      }
+      result = await generic.isAsExpected(pageUrl, url, assertion);
       if (result === true) {
         break;
       }
@@ -35,7 +31,7 @@ defineStep(
       await this.page.waitForTimeout(400);
     } while (counter < 2);
     expect
-      .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${expectedFullUrl}`)
+      .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${url}`)
       .toBeTruthy();
   }
 );

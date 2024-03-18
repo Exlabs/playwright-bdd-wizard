@@ -88,7 +88,7 @@ const index_js_2 = require("../testDataConfigs/index.js");
         text = yield processEnv.getEnvVarOrDefault(text);
         const element = yield pageActions.getNElementBy(getBy, parseInt(number), text);
         const elementIsVisible = yield element.isVisible();
-        const assertionMessage = `Element ${text} ${getBy} is not`;
+        const assertionMessage = `Element with ${text} ${getBy} is not`;
         switch (action) {
             case 'visible':
                 test_1.expect.soft(elementIsVisible, `${assertionMessage} visible`).toBeTruthy();

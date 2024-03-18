@@ -1,5 +1,12 @@
 import { getUrl } from '../testDataConfigs/index.js';
-
+export type AssertionType =
+  | 'greaterThanZero'
+  | 'notEmpty'
+  | 'empty'
+  | 'contains'
+  | 'doesnt contain'
+  | 'equals'
+  | 'ignore';
 export default class Generic {
   async getSubString(string: string, regExp: RegExp) {
     try {
@@ -62,11 +69,7 @@ export default class Generic {
     return entityName;
   }
 
-  async isAsExpected(
-    value: string | number | undefined,
-    expected: string | number,
-    assertionType?: 'greaterThanZero' | 'notEmpty' | 'empty' | 'contains' | 'doesnt contain' | 'equals' | 'ignore'
-  ) {
+  async isAsExpected(value: string | number | undefined, expected: string | number, assertionType?: AssertionType) {
     if (!assertionType && (expected == 'empty' || expected == 'notEmpty' || expected == 'ignore')) {
       assertionType = expected;
     }

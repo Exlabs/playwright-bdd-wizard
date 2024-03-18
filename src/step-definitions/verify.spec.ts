@@ -1,11 +1,11 @@
 import { defineStep } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { PageActions, Generic, ProcessEnvironmentVariables, GetByType } from '../helpers/index.js';
+import { PageActions, Generic, ProcessEnvironmentVariables, GetByType, AssertionType } from '../helpers/index.js';
 import { getTabs, getMessage } from '../testDataConfigs/index.js';
 
 defineStep(
   'I verify if a new tab which url {string} {string} opens',
-  async function (assertion: 'contains' | 'equals' | 'doesnt contain', urlKey: string) {
+  async function (assertion: AssertionType, urlKey: string) {
     const generic = new Generic();
     const userUrl = await generic.getUrlBasedOnUserInput(urlKey);
     const pageActions = new PageActions(this.page, this.context);
@@ -14,27 +14,24 @@ defineStep(
   }
 );
 
-defineStep(
-  'I verify if URL {string} {string}',
-  async function (assertion: 'contains' | 'equals' | 'doesnt contain', name: string) {
-    const generic = new Generic();
-    const url = await generic.getUrlBasedOnUserInput(name);
-    const pageUrl = await this.page.url();
-    let counter = 0;
-    let result = false;
-    do {
-      result = await generic.isAsExpected(pageUrl, url, assertion);
-      if (result === true) {
-        break;
-      }
-      counter++;
-      await this.page.waitForTimeout(400);
-    } while (counter < 2);
-    expect
-      .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${url}`)
-      .toBeTruthy();
-  }
-);
+defineStep('I verify if URL {string} {string}', async function (assertion: AssertionType, name: string) {
+  const generic = new Generic();
+  const url = await generic.getUrlBasedOnUserInput(name);
+  const pageUrl = await this.page.url();
+  let counter = 0;
+  let result = false;
+  do {
+    result = await generic.isAsExpected(pageUrl, url, assertion);
+    if (result === true) {
+      break;
+    }
+    counter++;
+    await this.page.waitForTimeout(400);
+  } while (counter < 2);
+  expect
+    .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${url}`)
+    .toBeTruthy();
+});
 
 defineStep('I verify the {string} tabs', async function (dataKey: string) {
   const pageActions = new PageActions(this.page);
@@ -87,7 +84,7 @@ defineStep(
     text = await processEnv.getEnvVarOrDefault(text);
     const element = await pageActions.getNElementBy(getBy, parseInt(number), text);
     const elementIsVisible = await element.isVisible();
-    const assertionMessage = `Element ${text} ${getBy} is not`;
+    const assertionMessage = `Element with ${text} ${getBy} is not`;
     switch (action) {
       case 'visible':
         expect.soft(elementIsVisible, `${assertionMessage} visible`).toBeTruthy();

@@ -37,7 +37,7 @@ class PageActions {
                     return this.page.getByPlaceholder(text).nth(sequence);
                 case 'role':
                     return this.page.getByRole(text).nth(sequence);
-                case 'CSS':
+                case 'locator':
                     return this.page.locator(text).nth(sequence);
             }
         });

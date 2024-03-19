@@ -1,6 +1,6 @@
 import { Page, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
-export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'CSS';
+export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'locator';
 export default class PageActions {
     readonly page: Page;
     readonly generic: Generic;

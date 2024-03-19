@@ -1,7 +1,7 @@
 import { Page, expect, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
 import { getLoadingMessages, getEntityData } from '../testDataConfigs/index.js';
-export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'CSS';
+export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'locator';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
@@ -31,7 +31,7 @@ export default class PageActions {
         return this.page.getByPlaceholder(text).nth(sequence);
       case 'role':
         return this.page.getByRole(text).nth(sequence);
-      case 'CSS':
+      case 'locator':
         return this.page.locator(text).nth(sequence);
     }
   }

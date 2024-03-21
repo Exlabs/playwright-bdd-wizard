@@ -1,4 +1,4 @@
-export type AssertionType = 'greaterThanZero' | 'notEmpty' | 'empty' | 'contains' | 'doesnt contain' | 'equals' | 'ignore';
+export type AssertionType = 'greaterThanZero' | 'smallerThanZero' | 'equalsThanZero' | 'notEmpty' | 'empty' | 'contains' | 'doesnt contain' | 'equals' | 'ignore';
 export default class Generic {
     getSubString(string: string, regExp: RegExp): Promise<string | undefined>;
     getUrlBasedOnUserInput(page: string): Promise<string>;

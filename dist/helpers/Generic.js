@@ -100,6 +100,10 @@ class Generic {
                     return true;
                 case 'greaterThanZero':
                     return typeof value === 'number' && value > 0;
+                case 'smallerThanZero':
+                    return typeof value === 'number' && value < 0;
+                case 'equalsThanZero':
+                    return typeof value === 'number' && value == 0;
                 case 'contains':
                     return typeof value === 'string' && typeof expected === 'string' && value.includes(expected);
                 case 'doesnt contain':

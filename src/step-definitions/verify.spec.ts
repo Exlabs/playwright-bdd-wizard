@@ -1,6 +1,13 @@
 import { defineStep } from '@cucumber/cucumber';
 import { expect } from '@playwright/test';
-import { PageActions, Generic, ProcessEnvironmentVariables, GetByType, AssertionType } from '../helpers/index.js';
+import {
+  PageActions,
+  Generic,
+  ProcessEnvironmentVariables,
+  GetByType,
+  AssertionType,
+  ElementStatesType
+} from '../helpers/index.js';
 import { getTabs, getMessage } from '../testDataConfigs/index.js';
 
 defineStep(
@@ -73,59 +80,24 @@ defineStep('I verify the {string}, version: {string} data', async function (name
 
 defineStep(
   'I verify that {string} element with {string} {string} is {string}',
-  async function (
-    number: string,
-    text: string,
-    getBy: GetByType,
-    action: 'visible' | 'not visible' | 'editable' | 'disabled' | 'enabled'
-  ) {
+  async function (number: string, text: string, getBy: GetByType, expectedState: ElementStatesType) {
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();
     text = await processEnv.getEnvVarOrDefault(text);
-    const element = await pageActions.getNElementBy(getBy, parseInt(number), text);
-    const elementIsVisible = await element.isVisible();
-    const assertionMessage = `Element with ${text} ${getBy} is not`;
-    switch (action) {
-      case 'visible':
-        expect.soft(elementIsVisible, `${assertionMessage} visible`).toBeTruthy();
-        break;
-      case 'not visible':
-        expect.soft(elementIsVisible, `${assertionMessage} visible`).toBeFalsy();
-        break;
-      case 'editable':
-        expect.soft(element, `${assertionMessage} editable`).toBeEditable();
-        break;
-      case 'disabled':
-        expect.soft(element, `${assertionMessage} disabled`).toBeDisabled();
-        break;
-      case 'enabled':
-        expect.soft(element, `${assertionMessage} enabled`).toBeEnabled();
-    }
+    const element = pageActions.getNElementBy(getBy, parseInt(number), text);
+    await pageActions.testElementState(element, expectedState, 0);
   }
 );
 
 defineStep(
   'I verify that {string} element with {string} {string} becomes {string} during {string} seconds',
-  async function (number: string, text: string, getBy: GetByType, action: 'visible' | 'hidden', timeout: number) {
+  async function (number: string, text: string, getBy: GetByType, expectedState: ElementStatesType, timeout: number) {
     const timeoutInMs = timeout * 1000;
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();
     text = await processEnv.getEnvVarOrDefault(text);
-    const assertionMessage = `Element ${text} ${getBy} didnt become`;
-    switch (action) {
-      case 'visible':
-        expect(
-          await pageActions.isElementBecomingVisible(getBy, parseInt(number), text, true, timeoutInMs),
-          `${assertionMessage} visible`
-        ).toBeTruthy();
-        break;
-      case 'hidden':
-        expect(
-          await pageActions.isElementBecomingVisible(getBy, parseInt(number), text, false, timeoutInMs),
-          `${assertionMessage} hidden`
-        ).toBeFalsy();
-        break;
-    }
+    const element = pageActions.getNElementBy(getBy, parseInt(number), text);
+    await pageActions.testElementState(element, expectedState, timeoutInMs);
   }
 );
 

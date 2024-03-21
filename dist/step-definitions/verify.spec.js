@@ -81,47 +81,23 @@ const index_js_2 = require("../testDataConfigs/index.js");
         yield pageActions.checkTheFormData(name, parseInt(version));
     });
 });
-(0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} is {string}', function (number, text, getBy, action) {
+(0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} is {string}', function (number, text, getBy, expectedState) {
     return __awaiter(this, void 0, void 0, function* () {
         const pageActions = new index_js_1.PageActions(this.page);
         const processEnv = new index_js_1.ProcessEnvironmentVariables();
         text = yield processEnv.getEnvVarOrDefault(text);
-        const element = yield pageActions.getNElementBy(getBy, parseInt(number), text);
-        const elementIsVisible = yield element.isVisible();
-        const assertionMessage = `Element with ${text} ${getBy} is not`;
-        switch (action) {
-            case 'visible':
-                test_1.expect.soft(elementIsVisible, `${assertionMessage} visible`).toBeTruthy();
-                break;
-            case 'not visible':
-                test_1.expect.soft(elementIsVisible, `${assertionMessage} visible`).toBeFalsy();
-                break;
-            case 'editable':
-                test_1.expect.soft(element, `${assertionMessage} editable`).toBeEditable();
-                break;
-            case 'disabled':
-                test_1.expect.soft(element, `${assertionMessage} disabled`).toBeDisabled();
-                break;
-            case 'enabled':
-                test_1.expect.soft(element, `${assertionMessage} enabled`).toBeEnabled();
-        }
+        const element = pageActions.getNElementBy(getBy, parseInt(number), text);
+        yield pageActions.testElementState(element, expectedState, 0);
     });
 });
-(0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} becomes {string} during {string} seconds', function (number, text, getBy, action, timeout) {
+(0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} becomes {string} during {string} seconds', function (number, text, getBy, expectedState, timeout) {
     return __awaiter(this, void 0, void 0, function* () {
         const timeoutInMs = timeout * 1000;
         const pageActions = new index_js_1.PageActions(this.page);
         const processEnv = new index_js_1.ProcessEnvironmentVariables();
         text = yield processEnv.getEnvVarOrDefault(text);
-        const assertionMessage = `Element ${text} ${getBy} didnt become`;
-        switch (action) {
-            case 'visible':
-                (0, test_1.expect)(yield pageActions.isElementBecomingVisible(getBy, parseInt(number), text, true, timeoutInMs), `${assertionMessage} visible`).toBeTruthy();
-                break;
-            case 'hidden':
-                (0, test_1.expect)(yield pageActions.isElementBecomingVisible(getBy, parseInt(number), text, false, timeoutInMs), `${assertionMessage} hidden`).toBeFalsy();
-                break;
-        }
+        const element = pageActions.getNElementBy(getBy, parseInt(number), text);
+        yield pageActions.testElementState(element, expectedState, timeoutInMs);
     });
 });
 (0, cucumber_1.defineStep)('I verify that {string} field, {string} drop down option {string} available', function (fieldLabel, dropDownOption, toBeAvailable) {

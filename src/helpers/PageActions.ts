@@ -10,6 +10,7 @@ export type GetByType =
   | 'alternative text'
   | 'title'
   | 'locator';
+export type ElementStatesType = 'visible' | 'hidden' | 'editable' | 'disabled' | 'enabled' | 'read-only';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
@@ -67,6 +68,28 @@ export default class PageActions {
   async elementIsVisible(getBy: GetByType, elementNumber: number, text: string) {
     let element = await this.getNElementBy(getBy, elementNumber, text);
     return await element.isVisible();
+  }
+
+  async testElementState(element: Promise<Locator>, expectedState: ElementStatesType, timeout: number) {
+    switch (expectedState) {
+      case 'visible':
+        await expect.soft(await element).toBeVisible({ timeout: timeout });
+        break;
+      case 'hidden':
+        await expect.soft(await element).toBeHidden({ timeout: timeout });
+        break;
+      case 'editable':
+        await expect.soft(await element).toBeEditable({ timeout: timeout, editable: true });
+        break;
+      case 'read-only':
+        await expect.soft(await element).toBeEditable({ timeout: timeout, editable: false });
+        break;
+      case 'disabled':
+        await expect.soft(await element).toBeDisabled({ timeout: timeout });
+        break;
+      case 'enabled':
+        await expect.soft(await element).toBeEnabled({ timeout: timeout });
+    }
   }
 
   async isElementBecomingVisible(

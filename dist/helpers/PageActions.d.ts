@@ -1,6 +1,7 @@
 import { Page, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
 export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'test ID' | 'alternative text' | 'title' | 'locator';
+export type ElementStatesType = 'visible' | 'hidden' | 'editable' | 'disabled' | 'enabled' | 'read-only';
 export default class PageActions {
     readonly page: Page;
     readonly generic: Generic;
@@ -11,6 +12,7 @@ export default class PageActions {
     getNElementBy(getBy: GetByType, N: number, text: any): Promise<Locator>;
     getNPage(closeIt: boolean, N: number): Promise<Page>;
     elementIsVisible(getBy: GetByType, elementNumber: number, text: string): Promise<boolean>;
+    testElementState(element: Promise<Locator>, expectedState: ElementStatesType, timeout: number): Promise<void>;
     isElementBecomingVisible(getBy: GetByType, elementNumber: number, text: string, waitToBeVisible: boolean, timeout: number): Promise<boolean>;
     waitForMessagesToDisappear(timeout?: number, messages?: string[]): Promise<void>;
     saveCurrentURLToEnvAs(name: string): Promise<void>;

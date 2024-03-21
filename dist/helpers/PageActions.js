@@ -70,6 +70,29 @@ class PageActions {
             return yield element.isVisible();
         });
     }
+    testElementState(element, expectedState, timeout) {
+        return __awaiter(this, void 0, void 0, function* () {
+            switch (expectedState) {
+                case 'visible':
+                    yield test_1.expect.soft(yield element).toBeVisible({ timeout: timeout });
+                    break;
+                case 'hidden':
+                    yield test_1.expect.soft(yield element).toBeHidden({ timeout: timeout });
+                    break;
+                case 'editable':
+                    yield test_1.expect.soft(yield element).toBeEditable({ timeout: timeout, editable: true });
+                    break;
+                case 'read-only':
+                    yield test_1.expect.soft(yield element).toBeEditable({ timeout: timeout, editable: false });
+                    break;
+                case 'disabled':
+                    yield test_1.expect.soft(yield element).toBeDisabled({ timeout: timeout });
+                    break;
+                case 'enabled':
+                    yield test_1.expect.soft(yield element).toBeEnabled({ timeout: timeout });
+            }
+        });
+    }
     isElementBecomingVisible(getBy, elementNumber, text, waitToBeVisible, timeout) {
         return __awaiter(this, void 0, void 0, function* () {
             let is_visible = yield this.elementIsVisible(getBy, elementNumber, text);

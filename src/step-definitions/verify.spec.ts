@@ -111,18 +111,19 @@ defineStep(
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();
     text = await processEnv.getEnvVarOrDefault(text);
-    const element = await pageActions.getNElementBy(getBy, parseInt(number), text);
     const assertionMessage = `Element ${text} ${getBy} didnt become`;
     switch (action) {
       case 'visible':
-        expect
-          .soft(await pageActions.isElementBecomingVisible(element, true, timeoutInMs), `${assertionMessage} visible`)
-          .toBeTruthy();
+        expect(
+          await pageActions.isElementBecomingVisible(getBy, parseInt(number), text, true, timeoutInMs),
+          `${assertionMessage} visible`
+        ).toBeTruthy();
         break;
       case 'hidden':
-        expect
-          .soft(await pageActions.isElementBecomingVisible(element, false, timeoutInMs), `${assertionMessage} hidden`)
-          .toBeFalsy();
+        expect(
+          await pageActions.isElementBecomingVisible(getBy, parseInt(number), text, false, timeoutInMs),
+          `${assertionMessage} hidden`
+        ).toBeFalsy();
         break;
     }
   }

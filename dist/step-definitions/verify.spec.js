@@ -113,18 +113,13 @@ const index_js_2 = require("../testDataConfigs/index.js");
         const pageActions = new index_js_1.PageActions(this.page);
         const processEnv = new index_js_1.ProcessEnvironmentVariables();
         text = yield processEnv.getEnvVarOrDefault(text);
-        const element = yield pageActions.getNElementBy(getBy, parseInt(number), text);
         const assertionMessage = `Element ${text} ${getBy} didnt become`;
         switch (action) {
             case 'visible':
-                test_1.expect
-                    .soft(yield pageActions.isElementBecomingVisible(element, true, timeoutInMs), `${assertionMessage} visible`)
-                    .toBeTruthy();
+                (0, test_1.expect)(yield pageActions.isElementBecomingVisible(getBy, parseInt(number), text, true, timeoutInMs), `${assertionMessage} visible`).toBeTruthy();
                 break;
             case 'hidden':
-                test_1.expect
-                    .soft(yield pageActions.isElementBecomingVisible(element, false, timeoutInMs), `${assertionMessage} hidden`)
-                    .toBeFalsy();
+                (0, test_1.expect)(yield pageActions.isElementBecomingVisible(getBy, parseInt(number), text, false, timeoutInMs), `${assertionMessage} hidden`).toBeFalsy();
                 break;
         }
     });

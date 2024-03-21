@@ -1,6 +1,6 @@
 import { Page, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
-export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'locator';
+export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'test ID' | 'alternative text' | 'title' | 'locator';
 export default class PageActions {
     readonly page: Page;
     readonly generic: Generic;
@@ -10,8 +10,9 @@ export default class PageActions {
     zoom(setting: string, milisecounds: number): Promise<void>;
     getNElementBy(getBy: GetByType, N: number, text: any): Promise<Locator>;
     getNPage(closeIt: boolean, N: number): Promise<Page>;
-    isElementBecomingVisible(elementLocator: Locator, waitToBeVisible: boolean, timeout: number): Promise<boolean>;
-    waitForMessagesToDisappear(timeout?: number): Promise<void>;
+    elementIsVisible(getBy: GetByType, elementNumber: number, text: string): Promise<boolean>;
+    isElementBecomingVisible(getBy: GetByType, elementNumber: number, text: string, waitToBeVisible: boolean, timeout: number): Promise<boolean>;
+    waitForMessagesToDisappear(timeout?: number, messages?: string[]): Promise<void>;
     saveCurrentURLToEnvAs(name: string): Promise<void>;
     waitForPageToLoad(timeout?: number): Promise<void>;
     fillADropDown(dropDownLocator: Locator, value: string): Promise<void>;

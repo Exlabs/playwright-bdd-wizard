@@ -37,6 +37,12 @@ class PageActions {
                     return this.page.getByPlaceholder(text).nth(sequence);
                 case 'role':
                     return this.page.getByRole(text).nth(sequence);
+                case 'test ID':
+                    return this.page.getByTestId(text).nth(sequence);
+                case 'alternative text':
+                    return this.page.getByAltText(text).nth(sequence);
+                case 'title':
+                    return this.page.getByTitle(text).nth(sequence);
                 case 'locator':
                     return this.page.locator(text).nth(sequence);
             }
@@ -58,31 +64,36 @@ class PageActions {
             }
         });
     }
-    isElementBecomingVisible(elementLocator, waitToBeVisible, timeout) {
+    elementIsVisible(getBy, elementNumber, text) {
         return __awaiter(this, void 0, void 0, function* () {
-            let is_visible = yield elementLocator.isVisible();
+            let element = yield this.getNElementBy(getBy, elementNumber, text);
+            return yield element.isVisible();
+        });
+    }
+    isElementBecomingVisible(getBy, elementNumber, text, waitToBeVisible, timeout) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let is_visible = yield this.elementIsVisible(getBy, elementNumber, text);
             let timePerLoop = timeout / 10;
             let timeSpent = 0;
             if (waitToBeVisible) {
                 while (!is_visible && timeout >= timeSpent) {
                     yield this.page.waitForTimeout(timePerLoop);
-                    is_visible = yield elementLocator.isVisible();
+                    is_visible = yield this.elementIsVisible(getBy, elementNumber, text);
                     timeSpent += timePerLoop;
                 }
             }
             else {
                 while (is_visible && timeout > timeSpent) {
                     yield this.page.waitForTimeout(timePerLoop);
-                    is_visible = yield elementLocator.isVisible();
+                    is_visible = yield this.elementIsVisible(getBy, elementNumber, text);
                     timeSpent += timePerLoop;
                 }
             }
             return is_visible;
         });
     }
-    waitForMessagesToDisappear(timeout = 30000) {
+    waitForMessagesToDisappear(timeout = 30000, messages = (0, index_js_2.getLoadingMessages)()) {
         return __awaiter(this, void 0, void 0, function* () {
-            const messages = (0, index_js_2.getLoadingMessages)();
             const assertionMessage = `message stays visible for more than ${timeout}ms`;
             const startTime = Date.now();
             for (const message of messages) {
@@ -90,13 +101,13 @@ class PageActions {
                 const isVisitble = yield messageElement.isVisible();
                 if (isVisitble) {
                     test_1.expect
-                        .soft(yield this.isElementBecomingVisible(messageElement, false, timeout), `${message} ${assertionMessage}`)
+                        .soft(yield this.isElementBecomingVisible('text', 1, message, false, timeout), `${message} ${assertionMessage}`)
                         .toBeFalsy();
                     const timeoutLeft = yield this.generic.timeDelta(startTime, timeout);
                     if (timeoutLeft <= 0) {
                         (0, test_1.expect)(timeoutLeft, `Messages keep appearing for more than ${timeout}ms`).toBeGreaterThan(0);
                     }
-                    yield this.waitForMessagesToDisappear(timeoutLeft);
+                    yield this.waitForMessagesToDisappear(timeoutLeft, messages);
                     break;
                 }
             }

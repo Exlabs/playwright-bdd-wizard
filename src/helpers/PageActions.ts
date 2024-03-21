@@ -1,7 +1,15 @@
 import { Page, expect, Locator, BrowserContext } from '@playwright/test';
 import { Generic, ProcessEnvironmentVariables } from './index.js';
 import { getLoadingMessages, getEntityData } from '../testDataConfigs/index.js';
-export type GetByType = 'text' | 'label' | 'placeholder' | 'role' | 'locator';
+export type GetByType =
+  | 'text'
+  | 'label'
+  | 'placeholder'
+  | 'role'
+  | 'test ID'
+  | 'alternative text'
+  | 'title'
+  | 'locator';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
@@ -31,6 +39,12 @@ export default class PageActions {
         return this.page.getByPlaceholder(text).nth(sequence);
       case 'role':
         return this.page.getByRole(text).nth(sequence);
+      case 'test ID':
+        return this.page.getByTestId(text).nth(sequence);
+      case 'alternative text':
+        return this.page.getByAltText(text).nth(sequence);
+      case 'title':
+        return this.page.getByTitle(text).nth(sequence);
       case 'locator':
         return this.page.locator(text).nth(sequence);
     }
@@ -50,28 +64,38 @@ export default class PageActions {
     }
   }
 
-  async isElementBecomingVisible(elementLocator: Locator, waitToBeVisible: boolean, timeout: number) {
-    let is_visible = await elementLocator.isVisible();
+  async elementIsVisible(getBy: GetByType, elementNumber: number, text: string) {
+    let element = await this.getNElementBy(getBy, elementNumber, text);
+    return await element.isVisible();
+  }
+
+  async isElementBecomingVisible(
+    getBy: GetByType,
+    elementNumber: number,
+    text: string,
+    waitToBeVisible: boolean,
+    timeout: number
+  ) {
+    let is_visible = await this.elementIsVisible(getBy, elementNumber, text);
     let timePerLoop = timeout / 10;
     let timeSpent = 0;
     if (waitToBeVisible) {
       while (!is_visible && timeout >= timeSpent) {
         await this.page.waitForTimeout(timePerLoop);
-        is_visible = await elementLocator.isVisible();
+        is_visible = await this.elementIsVisible(getBy, elementNumber, text);
         timeSpent += timePerLoop;
       }
     } else {
       while (is_visible && timeout > timeSpent) {
         await this.page.waitForTimeout(timePerLoop);
-        is_visible = await elementLocator.isVisible();
+        is_visible = await this.elementIsVisible(getBy, elementNumber, text);
         timeSpent += timePerLoop;
       }
     }
     return is_visible;
   }
 
-  async waitForMessagesToDisappear(timeout: number = 30000) {
-    const messages = getLoadingMessages();
+  async waitForMessagesToDisappear(timeout: number = 30000, messages: string[] = getLoadingMessages()) {
     const assertionMessage = `message stays visible for more than ${timeout}ms`;
     const startTime = Date.now();
     for (const message of messages) {
@@ -79,13 +103,16 @@ export default class PageActions {
       const isVisitble = await messageElement.isVisible();
       if (isVisitble) {
         expect
-          .soft(await this.isElementBecomingVisible(messageElement, false, timeout), `${message} ${assertionMessage}`)
+          .soft(
+            await this.isElementBecomingVisible('text', 1, message, false, timeout),
+            `${message} ${assertionMessage}`
+          )
           .toBeFalsy();
         const timeoutLeft = await this.generic.timeDelta(startTime, timeout);
         if (timeoutLeft <= 0) {
           expect(timeoutLeft, `Messages keep appearing for more than ${timeout}ms`).toBeGreaterThan(0);
         }
-        await this.waitForMessagesToDisappear(timeoutLeft);
+        await this.waitForMessagesToDisappear(timeoutLeft, messages);
         break;
       }
     }

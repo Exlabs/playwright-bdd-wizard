@@ -17,39 +17,31 @@ const index_js_1 = require("../helpers/index.js");
 const index_js_2 = require("../testDataConfigs/index.js");
 (0, cucumber_1.defineStep)('I verify if a new tab which url {string} {string} opens', function (assertion, urlKey) {
     return __awaiter(this, void 0, void 0, function* () {
+        const assertions = new index_js_1.Assertions();
         const generic = new index_js_1.Generic();
         const userUrl = yield generic.getUrlBasedOnUserInput(urlKey);
         const pageActions = new index_js_1.PageActions(this.page, this.context);
         const secoundTab = yield pageActions.getNPage(true, 2);
-        test_1.expect.soft(yield generic.isAsExpected(secoundTab === null || secoundTab === void 0 ? void 0 : secoundTab.url(), userUrl, assertion)).toBeTruthy();
+        yield assertions.checkValue(secoundTab === null || secoundTab === void 0 ? void 0 : secoundTab.url(), userUrl, assertion, `New tab with ${urlKey} url didnt open`);
     });
 });
 (0, cucumber_1.defineStep)('I verify if URL {string} {string}', function (assertion, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const generic = new index_js_1.Generic();
-        const url = yield generic.getUrlBasedOnUserInput(name);
+        const assertions = new index_js_1.Assertions();
+        const expectedUrl = yield generic.getUrlBasedOnUserInput(name);
         const pageUrl = yield this.page.url();
-        let counter = 0;
-        let result = false;
-        do {
-            result = yield generic.isAsExpected(pageUrl, url, assertion);
-            if (result === true) {
-                break;
-            }
-            counter++;
-            yield this.page.waitForTimeout(400);
-        } while (counter < 2);
-        test_1.expect
-            .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${url}`)
-            .toBeTruthy();
+        const message = `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${expectedUrl}`;
+        yield assertions.checkValue(pageUrl, expectedUrl, assertion, message);
     });
 });
 (0, cucumber_1.defineStep)('I verify the {string} tabs', function (dataKey) {
     return __awaiter(this, void 0, void 0, function* () {
-        const pageActions = new index_js_1.PageActions(this.page);
+        const assertions = new index_js_1.Assertions();
         const tabsData = (0, index_js_2.getTabs)(dataKey);
-        yield pageActions.checkAmountOfElements(tabsData['locator'], tabsData['labels']);
-        yield pageActions.checkLabels(tabsData['locator'], tabsData['labels']);
+        const tabs = yield this.page.locator(tabsData['locator']);
+        yield assertions.checkAmountOfElements(tabs, tabsData['labels']);
+        yield assertions.checkLabels(tabs, tabsData['labels']);
     });
 });
 (0, cucumber_1.defineStep)('I verify that a {string} element contains {string} image', function (element, text) {
@@ -85,9 +77,10 @@ const index_js_2 = require("../testDataConfigs/index.js");
     return __awaiter(this, void 0, void 0, function* () {
         const pageActions = new index_js_1.PageActions(this.page);
         const processEnv = new index_js_1.ProcessEnvironmentVariables();
+        const assertions = new index_js_1.Assertions();
         text = yield processEnv.getEnvVarOrDefault(text);
         const element = pageActions.getNElementBy(getBy, parseInt(number), text);
-        yield pageActions.testElementState(element, expectedState, 0);
+        yield assertions.checkElementState(element, expectedState, 0);
     });
 });
 (0, cucumber_1.defineStep)('I verify that {string} element with {string} {string} becomes {string} during {string} seconds', function (number, text, getBy, expectedState, timeout) {
@@ -95,9 +88,10 @@ const index_js_2 = require("../testDataConfigs/index.js");
         const timeoutInMs = timeout * 1000;
         const pageActions = new index_js_1.PageActions(this.page);
         const processEnv = new index_js_1.ProcessEnvironmentVariables();
+        const assertions = new index_js_1.Assertions();
         text = yield processEnv.getEnvVarOrDefault(text);
         const element = pageActions.getNElementBy(getBy, parseInt(number), text);
-        yield pageActions.testElementState(element, expectedState, timeoutInMs);
+        yield assertions.checkElementState(element, expectedState, timeoutInMs);
     });
 });
 (0, cucumber_1.defineStep)('I verify that {string} field, {string} drop down option {string} available', function (fieldLabel, dropDownOption, toBeAvailable) {

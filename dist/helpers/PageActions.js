@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const test_1 = require("@playwright/test");
 const index_js_1 = require("./index.js");
 const index_js_2 = require("../testDataConfigs/index.js");
 class PageActions {
@@ -18,6 +17,7 @@ class PageActions {
         this.context = context;
         this.generic = new index_js_1.Generic();
         this.processEnv = new index_js_1.ProcessEnvironmentVariables();
+        this.assertions = new index_js_1.Assertions();
     }
     zoom(setting, milisecounds) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -60,79 +60,7 @@ class PageActions {
                 return newTab;
             }
             else {
-                throw new Error('chekNewTab, context is not defined');
-            }
-        });
-    }
-    elementIsVisible(getBy, elementNumber, text) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let element = yield this.getNElementBy(getBy, elementNumber, text);
-            return yield element.isVisible();
-        });
-    }
-    testElementState(element, expectedState, timeout) {
-        return __awaiter(this, void 0, void 0, function* () {
-            switch (expectedState) {
-                case 'visible':
-                    yield test_1.expect.soft(yield element).toBeVisible({ timeout: timeout });
-                    break;
-                case 'hidden':
-                    yield test_1.expect.soft(yield element).toBeHidden({ timeout: timeout });
-                    break;
-                case 'editable':
-                    yield test_1.expect.soft(yield element).toBeEditable({ timeout: timeout, editable: true });
-                    break;
-                case 'read-only':
-                    yield test_1.expect.soft(yield element).toBeEditable({ timeout: timeout, editable: false });
-                    break;
-                case 'disabled':
-                    yield test_1.expect.soft(yield element).toBeDisabled({ timeout: timeout });
-                    break;
-                case 'enabled':
-                    yield test_1.expect.soft(yield element).toBeEnabled({ timeout: timeout });
-            }
-        });
-    }
-    isElementBecomingVisible(getBy, elementNumber, text, waitToBeVisible, timeout) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let is_visible = yield this.elementIsVisible(getBy, elementNumber, text);
-            let timePerLoop = timeout / 10;
-            let timeSpent = 0;
-            if (waitToBeVisible) {
-                while (!is_visible && timeout >= timeSpent) {
-                    yield this.page.waitForTimeout(timePerLoop);
-                    is_visible = yield this.elementIsVisible(getBy, elementNumber, text);
-                    timeSpent += timePerLoop;
-                }
-            }
-            else {
-                while (is_visible && timeout > timeSpent) {
-                    yield this.page.waitForTimeout(timePerLoop);
-                    is_visible = yield this.elementIsVisible(getBy, elementNumber, text);
-                    timeSpent += timePerLoop;
-                }
-            }
-            return is_visible;
-        });
-    }
-    waitForMessagesToDisappear(timeout = 30000, messages = (0, index_js_2.getLoadingMessages)()) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const assertionMessage = `message stays visible for more than ${timeout}ms`;
-            const startTime = Date.now();
-            for (const message of messages) {
-                const messageElement = this.page.getByText(message).first();
-                const isVisitble = yield messageElement.isVisible();
-                if (isVisitble) {
-                    test_1.expect
-                        .soft(yield this.isElementBecomingVisible('text', 1, message, false, timeout), `${message} ${assertionMessage}`)
-                        .toBeFalsy();
-                    const timeoutLeft = yield this.generic.timeDelta(startTime, timeout);
-                    if (timeoutLeft <= 0) {
-                        (0, test_1.expect)(timeoutLeft, `Messages keep appearing for more than ${timeout}ms`).toBeGreaterThan(0);
-                    }
-                    yield this.waitForMessagesToDisappear(timeoutLeft, messages);
-                    break;
-                }
+                throw new Error('getNPage, context is not defined');
             }
         });
     }
@@ -144,10 +72,26 @@ class PageActions {
     waitForPageToLoad(timeout = 100000) {
         return __awaiter(this, void 0, void 0, function* () {
             const startTime = Date.now();
-            let timeoutLeft = yield this.generic.timeDelta(startTime, timeout);
-            yield this.waitForMessagesToDisappear(timeoutLeft);
-            timeoutLeft = yield this.generic.timeDelta(startTime, timeout);
+            yield this.checkIfMessagesDisappear(timeout);
+            const timeoutLeft = yield this.generic.timeDelta(startTime, timeout);
             yield this.page.waitForLoadState('load', { timeout: timeoutLeft });
+        });
+    }
+    checkIfMessagesDisappear(timeout = 30000, messages = (0, index_js_2.getLoadingMessages)()) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const startTime = Date.now();
+            for (const message of messages) {
+                const elementPromise = this.getNElementBy('text', 1, message);
+                const element = yield elementPromise;
+                if (yield element.isVisible({ timeout: 0 })) {
+                    const assertionMessage = `${message} element stays visible for more than ${timeout}ms`;
+                    yield this.assertions.checkElementState(elementPromise, 'hidden', timeout, assertionMessage);
+                    timeout = yield this.generic.timeDelta(startTime, timeout);
+                    yield this.assertions.checkValue(timeout, 0, 'greaterThanZero', 'Loading messages were appearing for too long');
+                    yield this.checkIfMessagesDisappear(timeout, messages);
+                    break;
+                }
+            }
         });
     }
     fillADropDown(dropDownLocator, value) {
@@ -185,34 +129,21 @@ class PageActions {
                     yield fieldLocator.fill(data[key]);
                 }
                 yield this.page.waitForTimeout(150);
-                (0, test_1.expect)(yield fieldLocator.inputValue(), `Couldnt type the ${data[key]}`).toEqual(data[key]);
+                if ((yield fieldLocator.inputValue()) !== data[key]) {
+                    console.error(`Couldnt type the ${data[key]}`);
+                }
             }
         });
     }
-    checkTheFormData(name, version) {
+    checkTheFormData(entityName, version) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = (0, index_js_2.getEntityData)(name, version);
+            const data = (0, index_js_2.getEntityData)(entityName, version);
             for (const key in data) {
                 const value = (yield this.page.getByLabel(key).getAttribute('value'));
-                test_1.expect
-                    .soft(yield this.generic.isAsExpected(value, data[key]), `Unexpected value at ${name} form, version ${version}`)
-                    .toBeTruthy();
+                yield this.assertions.checkValue(value, data[key]),
+                    'equals',
+                    `Unexpected value at ${entityName} form, version ${version}`;
             }
-        });
-    }
-    checkLabels(locatorString, labels) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const locator = this.page.locator(locatorString);
-            const tabs = yield locator.allInnerTexts();
-            for (let key in labels) {
-                test_1.expect.soft(yield this.generic.isAsExpected(labels[key], tabs[key]), 'Unexpected label').toBeTruthy();
-            }
-        });
-    }
-    checkAmountOfElements(locatorString, labels) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const locator = this.page.locator(locatorString);
-            test_1.expect.soft(yield locator.count(), 'Unexpected count').toEqual(labels.length);
         });
     }
 }

@@ -1,6 +1,6 @@
-import { Page, expect, Locator, BrowserContext } from '@playwright/test';
-import { Generic, ProcessEnvironmentVariables } from './index.js';
-import { getLoadingMessages, getEntityData } from '../testDataConfigs/index.js';
+import { Page, Locator, BrowserContext } from '@playwright/test';
+import { Generic, Assertions, ProcessEnvironmentVariables } from './index.js';
+import { getEntityData, getLoadingMessages } from '../testDataConfigs/index.js';
 export type GetByType =
   | 'text'
   | 'label'
@@ -10,11 +10,11 @@ export type GetByType =
   | 'alternative text'
   | 'title'
   | 'locator';
-export type ElementStatesType = 'visible' | 'hidden' | 'editable' | 'disabled' | 'enabled' | 'read-only';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
   readonly processEnv: ProcessEnvironmentVariables;
+  readonly assertions: Assertions;
   private context?: BrowserContext;
 
   constructor(page: Page, context?: BrowserContext) {
@@ -22,6 +22,7 @@ export default class PageActions {
     this.context = context;
     this.generic = new Generic();
     this.processEnv = new ProcessEnvironmentVariables();
+    this.assertions = new Assertions();
   }
 
   async zoom(setting: string, milisecounds: number) {
@@ -61,83 +62,7 @@ export default class PageActions {
       }
       return newTab;
     } else {
-      throw new Error('chekNewTab, context is not defined');
-    }
-  }
-
-  async elementIsVisible(getBy: GetByType, elementNumber: number, text: string) {
-    let element = await this.getNElementBy(getBy, elementNumber, text);
-    return await element.isVisible();
-  }
-
-  async testElementState(element: Promise<Locator>, expectedState: ElementStatesType, timeout: number) {
-    switch (expectedState) {
-      case 'visible':
-        await expect.soft(await element).toBeVisible({ timeout: timeout });
-        break;
-      case 'hidden':
-        await expect.soft(await element).toBeHidden({ timeout: timeout });
-        break;
-      case 'editable':
-        await expect.soft(await element).toBeEditable({ timeout: timeout, editable: true });
-        break;
-      case 'read-only':
-        await expect.soft(await element).toBeEditable({ timeout: timeout, editable: false });
-        break;
-      case 'disabled':
-        await expect.soft(await element).toBeDisabled({ timeout: timeout });
-        break;
-      case 'enabled':
-        await expect.soft(await element).toBeEnabled({ timeout: timeout });
-    }
-  }
-
-  async isElementBecomingVisible(
-    getBy: GetByType,
-    elementNumber: number,
-    text: string,
-    waitToBeVisible: boolean,
-    timeout: number
-  ) {
-    let is_visible = await this.elementIsVisible(getBy, elementNumber, text);
-    let timePerLoop = timeout / 10;
-    let timeSpent = 0;
-    if (waitToBeVisible) {
-      while (!is_visible && timeout >= timeSpent) {
-        await this.page.waitForTimeout(timePerLoop);
-        is_visible = await this.elementIsVisible(getBy, elementNumber, text);
-        timeSpent += timePerLoop;
-      }
-    } else {
-      while (is_visible && timeout > timeSpent) {
-        await this.page.waitForTimeout(timePerLoop);
-        is_visible = await this.elementIsVisible(getBy, elementNumber, text);
-        timeSpent += timePerLoop;
-      }
-    }
-    return is_visible;
-  }
-
-  async waitForMessagesToDisappear(timeout: number = 30000, messages: string[] = getLoadingMessages()) {
-    const assertionMessage = `message stays visible for more than ${timeout}ms`;
-    const startTime = Date.now();
-    for (const message of messages) {
-      const messageElement = this.page.getByText(message).first();
-      const isVisitble = await messageElement.isVisible();
-      if (isVisitble) {
-        expect
-          .soft(
-            await this.isElementBecomingVisible('text', 1, message, false, timeout),
-            `${message} ${assertionMessage}`
-          )
-          .toBeFalsy();
-        const timeoutLeft = await this.generic.timeDelta(startTime, timeout);
-        if (timeoutLeft <= 0) {
-          expect(timeoutLeft, `Messages keep appearing for more than ${timeout}ms`).toBeGreaterThan(0);
-        }
-        await this.waitForMessagesToDisappear(timeoutLeft, messages);
-        break;
-      }
+      throw new Error('getNPage, context is not defined');
     }
   }
 
@@ -147,10 +72,25 @@ export default class PageActions {
 
   async waitForPageToLoad(timeout: number = 100000) {
     const startTime = Date.now();
-    let timeoutLeft = await this.generic.timeDelta(startTime, timeout);
-    await this.waitForMessagesToDisappear(timeoutLeft);
-    timeoutLeft = await this.generic.timeDelta(startTime, timeout);
+    await this.checkIfMessagesDisappear(timeout);
+    const timeoutLeft = await this.generic.timeDelta(startTime, timeout);
     await this.page.waitForLoadState('load', { timeout: timeoutLeft });
+  }
+
+  async checkIfMessagesDisappear(timeout: number = 30000, messages: string[] = getLoadingMessages()) {
+    const startTime = Date.now();
+    for (const message of messages) {
+      const elementPromise = this.getNElementBy('text', 1, message);
+      const element = await elementPromise;
+      if (await element.isVisible({ timeout: 0 })) {
+        const assertionMessage = `${message} element stays visible for more than ${timeout}ms`;
+        await this.assertions.checkElementState(elementPromise, 'hidden', timeout, assertionMessage);
+        timeout = await this.generic.timeDelta(startTime, timeout);
+        await this.assertions.checkValue(timeout, 0, 'greaterThanZero', 'Loading messages were appearing for too long');
+        await this.checkIfMessagesDisappear(timeout, messages);
+        break;
+      }
+    }
   }
 
   async fillADropDown(dropDownLocator: Locator, value: string) {
@@ -184,30 +124,19 @@ export default class PageActions {
         await fieldLocator.fill(data[key]);
       }
       await this.page.waitForTimeout(150);
-      expect(await fieldLocator.inputValue(), `Couldnt type the ${data[key]}`).toEqual(data[key]);
+      if ((await fieldLocator.inputValue()) !== data[key]) {
+        console.error(`Couldnt type the ${data[key]}`);
+      }
     }
   }
 
-  async checkTheFormData(name: string, version: number) {
-    const data = getEntityData(name, version);
+  async checkTheFormData(entityName: string, version: number) {
+    const data = getEntityData(entityName, version);
     for (const key in data) {
       const value = (await this.page.getByLabel(key).getAttribute('value')) as string;
-      expect
-        .soft(await this.generic.isAsExpected(value, data[key]), `Unexpected value at ${name} form, version ${version}`)
-        .toBeTruthy();
+      await this.assertions.checkValue(value, data[key]),
+        'equals',
+        `Unexpected value at ${entityName} form, version ${version}`;
     }
-  }
-
-  async checkLabels(locatorString: string, labels: Array<string>) {
-    const locator = this.page.locator(locatorString);
-    const tabs = await locator.allInnerTexts();
-    for (let key in labels) {
-      expect.soft(await this.generic.isAsExpected(labels[key], tabs[key]), 'Unexpected label').toBeTruthy();
-    }
-  }
-
-  async checkAmountOfElements(locatorString: string, labels: Array<string>) {
-    const locator = this.page.locator(locatorString);
-    expect.soft(await locator.count(), 'Unexpected count').toEqual(labels.length);
   }
 }

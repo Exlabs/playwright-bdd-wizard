@@ -3,48 +3,41 @@ import { expect } from '@playwright/test';
 import {
   PageActions,
   Generic,
+  Assertions,
   ProcessEnvironmentVariables,
   GetByType,
-  AssertionType,
-  ElementStatesType
+  ValueAssertionType,
+  LocatorStatesType
 } from '../helpers/index.js';
 import { getTabs, getMessage } from '../testDataConfigs/index.js';
 
 defineStep(
   'I verify if a new tab which url {string} {string} opens',
-  async function (assertion: AssertionType, urlKey: string) {
+  async function (assertion: ValueAssertionType, urlKey: string) {
+    const assertions = new Assertions();
     const generic = new Generic();
     const userUrl = await generic.getUrlBasedOnUserInput(urlKey);
     const pageActions = new PageActions(this.page, this.context);
     const secoundTab = await pageActions.getNPage(true, 2);
-    expect.soft(await generic.isAsExpected(secoundTab?.url(), userUrl, assertion)).toBeTruthy();
+    await assertions.checkValue(secoundTab?.url(), userUrl, assertion, `New tab with ${urlKey} url didnt open`);
   }
 );
 
-defineStep('I verify if URL {string} {string}', async function (assertion: AssertionType, name: string) {
+defineStep('I verify if URL {string} {string}', async function (assertion: ValueAssertionType, name: string) {
   const generic = new Generic();
-  const url = await generic.getUrlBasedOnUserInput(name);
+  const assertions = new Assertions();
+  const expectedUrl = await generic.getUrlBasedOnUserInput(name);
   const pageUrl = await this.page.url();
-  let counter = 0;
-  let result = false;
-  do {
-    result = await generic.isAsExpected(pageUrl, url, assertion);
-    if (result === true) {
-      break;
-    }
-    counter++;
-    await this.page.waitForTimeout(400);
-  } while (counter < 2);
-  expect
-    .soft(result, `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${url}`)
-    .toBeTruthy();
+  const message = `The page URL ${assertion} ${name} failed. Expected ${pageUrl} to ${assertion} ${expectedUrl}`;
+  await assertions.checkValue(pageUrl, expectedUrl, assertion, message);
 });
 
 defineStep('I verify the {string} tabs', async function (dataKey: string) {
-  const pageActions = new PageActions(this.page);
+  const assertions = new Assertions();
   const tabsData = getTabs(dataKey);
-  await pageActions.checkAmountOfElements(tabsData['locator'], tabsData['labels']);
-  await pageActions.checkLabels(tabsData['locator'], tabsData['labels']);
+  const tabs = await this.page.locator(tabsData['locator']);
+  await assertions.checkAmountOfElements(tabs, tabsData['labels']);
+  await assertions.checkLabels(tabs, tabsData['labels']);
 });
 
 defineStep(
@@ -80,24 +73,26 @@ defineStep('I verify the {string}, version: {string} data', async function (name
 
 defineStep(
   'I verify that {string} element with {string} {string} is {string}',
-  async function (number: string, text: string, getBy: GetByType, expectedState: ElementStatesType) {
+  async function (number: string, text: string, getBy: GetByType, expectedState: LocatorStatesType) {
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();
+    const assertions = new Assertions();
     text = await processEnv.getEnvVarOrDefault(text);
     const element = pageActions.getNElementBy(getBy, parseInt(number), text);
-    await pageActions.testElementState(element, expectedState, 0);
+    await assertions.checkElementState(element, expectedState, 0);
   }
 );
 
 defineStep(
   'I verify that {string} element with {string} {string} becomes {string} during {string} seconds',
-  async function (number: string, text: string, getBy: GetByType, expectedState: ElementStatesType, timeout: number) {
+  async function (number: string, text: string, getBy: GetByType, expectedState: LocatorStatesType, timeout: number) {
     const timeoutInMs = timeout * 1000;
     const pageActions = new PageActions(this.page);
     const processEnv = new ProcessEnvironmentVariables();
+    const assertions = new Assertions();
     text = await processEnv.getEnvVarOrDefault(text);
     const element = pageActions.getNElementBy(getBy, parseInt(number), text);
-    await pageActions.testElementState(element, expectedState, timeoutInMs);
+    await assertions.checkElementState(element, expectedState, timeoutInMs);
   }
 );
 

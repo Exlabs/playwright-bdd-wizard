@@ -25,19 +25,19 @@ class Generic {
             }
         });
     }
-    getUrlBasedOnUserInput(page) {
+    getUrlBasedOnUserInput(input) {
         return __awaiter(this, void 0, void 0, function* () {
             const baseUrl = (0, index_js_1.getUrl)('main');
-            const pageUrl = (0, index_js_1.getUrl)(page);
-            const savedURL = process.env[page];
+            const pageUrl = (0, index_js_1.getUrl)(input);
+            const savedURL = process.env[input];
             let url = '';
             if (savedURL) {
                 url = savedURL;
             }
-            else if (page.includes('http')) {
-                url = page;
+            else if (input.includes('http')) {
+                url = input;
             }
-            else if (page === 'main') {
+            else if (input === 'main') {
                 url = baseUrl;
             }
             else if (pageUrl.includes('http')) {
@@ -46,11 +46,11 @@ class Generic {
             else if (pageUrl !== '') {
                 url = baseUrl + pageUrl;
             }
-            else if (page !== '') {
-                url = baseUrl + page;
+            else if (input !== '') {
+                url = baseUrl + input;
             }
             else {
-                console.error(`Error: Couldn't define the ${page} url`);
+                console.error(`Error: Couldn't define the ${input} url`);
             }
             return url;
         });
@@ -84,33 +84,6 @@ class Generic {
         return __awaiter(this, void 0, void 0, function* () {
             const entityName = name + (yield this.getRandomNumberString(numbersLength));
             return entityName;
-        });
-    }
-    isAsExpected(value, expected, assertionType) {
-        return __awaiter(this, void 0, void 0, function* () {
-            if (!assertionType && (expected == 'empty' || expected == 'notEmpty' || expected == 'ignore')) {
-                assertionType = expected;
-            }
-            switch (assertionType) {
-                case 'notEmpty':
-                    return value != '';
-                case 'empty':
-                    return value == '';
-                case 'ignore':
-                    return true;
-                case 'greaterThanZero':
-                    return typeof value === 'number' && value > 0;
-                case 'smallerThanZero':
-                    return typeof value === 'number' && value < 0;
-                case 'equalsThanZero':
-                    return typeof value === 'number' && value == 0;
-                case 'contains':
-                    return typeof value === 'string' && typeof expected === 'string' && value.includes(expected);
-                case 'doesnt contain':
-                    return typeof value === 'string' && typeof expected === 'string' && !value.includes(expected);
-                default:
-                    return value == expected;
-            }
         });
     }
 }

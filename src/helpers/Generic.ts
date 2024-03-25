@@ -1,14 +1,5 @@
 import { getUrl } from '../testDataConfigs/index.js';
-export type AssertionType =
-  | 'greaterThanZero'
-  | 'smallerThanZero'
-  | 'equalsThanZero'
-  | 'notEmpty'
-  | 'empty'
-  | 'contains'
-  | 'doesnt contain'
-  | 'equals'
-  | 'ignore';
+
 export default class Generic {
   async getSubString(string: string, regExp: RegExp) {
     try {
@@ -21,25 +12,25 @@ export default class Generic {
     }
   }
 
-  async getUrlBasedOnUserInput(page: string): Promise<string> {
+  async getUrlBasedOnUserInput(input: string): Promise<string> {
     const baseUrl = getUrl('main');
-    const pageUrl = getUrl(page);
-    const savedURL = process.env[page];
+    const pageUrl = getUrl(input);
+    const savedURL = process.env[input];
     let url = '';
     if (savedURL) {
       url = savedURL;
-    } else if (page.includes('http')) {
-      url = page;
-    } else if (page === 'main') {
+    } else if (input.includes('http')) {
+      url = input;
+    } else if (input === 'main') {
       url = baseUrl;
     } else if (pageUrl.includes('http')) {
       url = pageUrl;
     } else if (pageUrl !== '') {
       url = baseUrl + pageUrl;
-    } else if (page !== '') {
-      url = baseUrl + page;
+    } else if (input !== '') {
+      url = baseUrl + input;
     } else {
-      console.error(`Error: Couldn't define the ${page} url`);
+      console.error(`Error: Couldn't define the ${input} url`);
     }
     return url;
   }
@@ -69,31 +60,5 @@ export default class Generic {
   async generateUniqueName(name: string = 'Automated Test: ', numbersLength: number = 5) {
     const entityName = name + (await this.getRandomNumberString(numbersLength));
     return entityName;
-  }
-
-  async isAsExpected(value: string | number | undefined, expected: string | number, assertionType?: AssertionType) {
-    if (!assertionType && (expected == 'empty' || expected == 'notEmpty' || expected == 'ignore')) {
-      assertionType = expected;
-    }
-    switch (assertionType) {
-      case 'notEmpty':
-        return value != '';
-      case 'empty':
-        return value == '';
-      case 'ignore':
-        return true;
-      case 'greaterThanZero':
-        return typeof value === 'number' && value > 0;
-      case 'smallerThanZero':
-        return typeof value === 'number' && value < 0;
-      case 'equalsThanZero':
-        return typeof value === 'number' && value == 0;
-      case 'contains':
-        return typeof value === 'string' && typeof expected === 'string' && value.includes(expected);
-      case 'doesnt contain':
-        return typeof value === 'string' && typeof expected === 'string' && !value.includes(expected);
-      default:
-        return value == expected;
-    }
   }
 }

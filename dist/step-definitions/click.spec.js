@@ -16,12 +16,13 @@ const index_js_1 = require("../helpers/index.js");
 (0, cucumber_1.defineStep)('I {string} the {string} element that contains {string}', function (action, field, text) {
     return __awaiter(this, void 0, void 0, function* () {
         const element = yield this.page.locator(field).filter({ containsText: text }).first();
-        if (action === 'click') {
-            yield element.click();
+        const pageActions = new index_js_1.PageActions(this.page, this.context);
+        if (element) {
+            yield pageActions.clickElement(element, action);
             yield this.page.waitForTimeout(3000);
         }
         else {
-            yield element.dispatchEvent('click');
+            throw new Error(`Element with ${text} text not found`);
         }
     });
 });
@@ -36,11 +37,11 @@ const index_js_1 = require("../helpers/index.js");
         text = yield processEnv.getEnvVarOrDefault(text);
         const pageActions = new index_js_1.PageActions(this.page, this.context);
         const element = yield pageActions.getNElementBy(getBy, parseInt(number), text);
-        if (action === 'click') {
-            yield element.click();
+        if (element) {
+            yield pageActions.clickElement(element, action);
         }
         else {
-            yield element.dispatchEvent('click');
+            throw new Error(`Element with ${getBy} ${text} not found`);
         }
     });
 });

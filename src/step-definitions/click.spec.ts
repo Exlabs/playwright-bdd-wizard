@@ -1,15 +1,16 @@
 import { defineStep } from '@cucumber/cucumber';
-import { PageActions, ProcessEnvironmentVariables, GetByType } from '../helpers/index.js';
+import { PageActions, ProcessEnvironmentVariables, GetByType, ClickActionType } from '../helpers/index.js';
 
 defineStep(
   'I {string} the {string} element that contains {string}',
-  async function (action: 'click' | 'dispatch click', field: string, text: string) {
+  async function (action: ClickActionType, field: string, text: string) {
     const element = await this.page.locator(field).filter({ containsText: text }).first();
-    if (action === 'click') {
-      await element.click();
+    const pageActions = new PageActions(this.page, this.context);
+    if (element) {
+      await pageActions.clickElement(element, action);
       await this.page.waitForTimeout(3000);
     } else {
-      await element.dispatchEvent('click');
+      throw new Error(`Element with ${text} text not found`);
     }
   }
 );
@@ -20,15 +21,15 @@ defineStep('I click on the top left corner of the page', async function () {
 
 defineStep(
   'I {string} the {string} element with {string} {string}',
-  async function (action: 'click' | 'dispatch click', number: string, text: string, getBy: GetByType) {
+  async function (action: ClickActionType, number: string, text: string, getBy: GetByType) {
     const processEnv = new ProcessEnvironmentVariables();
     text = await processEnv.getEnvVarOrDefault(text);
     const pageActions = new PageActions(this.page, this.context);
     const element = await pageActions.getNElementBy(getBy, parseInt(number), text);
-    if (action === 'click') {
-      await element.click();
+    if (element) {
+      await pageActions.clickElement(element, action);
     } else {
-      await element.dispatchEvent('click');
+      throw new Error(`Element with ${getBy} ${text} not found`);
     }
   }
 );

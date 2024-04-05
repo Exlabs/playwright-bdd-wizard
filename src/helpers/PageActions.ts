@@ -10,6 +10,7 @@ export type GetByType =
   | 'alternative text'
   | 'title'
   | 'locator';
+export type ClickActionType = 'click' | 'dispatch click' | 'force click' | 'force dispatch click';
 export default class PageActions {
   readonly page: Page;
   readonly generic: Generic;
@@ -49,6 +50,19 @@ export default class PageActions {
         return this.page.getByTitle(text).nth(sequence);
       case 'locator':
         return this.page.locator(text).nth(sequence);
+    }
+  }
+
+  async clickElement(element: Locator, clickAction: ClickActionType) {
+    switch (clickAction) {
+      case 'click':
+        return await element.click();
+      case 'dispatch click':
+        return await element.dispatchEvent('click');
+      case 'force click':
+        return await element.click({ force: true });
+      case 'force dispatch click':
+        return await element.dispatchEvent('click', { force: true });
     }
   }
 

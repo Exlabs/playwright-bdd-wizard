@@ -48,6 +48,20 @@ class PageActions {
             }
         });
     }
+    clickElement(element, clickAction) {
+        return __awaiter(this, void 0, void 0, function* () {
+            switch (clickAction) {
+                case 'click':
+                    return yield element.click();
+                case 'dispatch click':
+                    return yield element.dispatchEvent('click');
+                case 'force click':
+                    return yield element.click({ force: true });
+                case 'force dispatch click':
+                    return yield element.dispatchEvent('click', { force: true });
+            }
+        });
+    }
     getNPage(closeIt, N) {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.context) {

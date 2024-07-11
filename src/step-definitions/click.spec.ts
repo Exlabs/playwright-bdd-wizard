@@ -36,4 +36,18 @@ defineStep(
   }
 );
 
+defineStep(
+  'If its visible, I {string} the {string} element with {string} {string}',
+  async function (action: ClickActionType, number: string, text: string, getBy: GetByType) {
+    const processEnv = new ProcessEnvironmentVariables();
+    const resolvedText = await processEnv.getEnvVarOrDefault(text);
+    const pageActions = new PageActions(this.page, this.context);
+    const element = await pageActions.getNElementBy(getBy, parseInt(number), resolvedText);
+
+    if (await element.isVisible()) {
+      await pageActions.clickElement(element, action);
+    }
+  }
+);
+
 export { defineStep };

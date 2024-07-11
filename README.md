@@ -8,7 +8,8 @@
 
 - **Scenario: Example with google**
    - **When I open "https://www.google.com" page**
-   - **And I "type" "playwright" on the keyboard**
+   - **Then If its visible, I "click" the "2" element with "Reject all" "text"**
+   - **And I "type" "playwright" in the "1" element with "Search" "title"**
    - **And I "press" "Enter" on the keyboard**
    - **Then I verify that "1" element with "playwright.dev" "text" is "visible"**
    - **And I wait "1" seconds**

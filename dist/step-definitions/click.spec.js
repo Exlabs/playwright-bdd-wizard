@@ -45,3 +45,14 @@ const index_js_1 = require("../helpers/index.js");
         }
     });
 });
+(0, cucumber_1.defineStep)('If its visible, I {string} the {string} element with {string} {string}', function (action, number, text, getBy) {
+    return __awaiter(this, void 0, void 0, function* () {
+        const processEnv = new index_js_1.ProcessEnvironmentVariables();
+        const resolvedText = yield processEnv.getEnvVarOrDefault(text);
+        const pageActions = new index_js_1.PageActions(this.page, this.context);
+        const element = yield pageActions.getNElementBy(getBy, parseInt(number), resolvedText);
+        if (yield element.isVisible()) {
+            yield pageActions.clickElement(element, action);
+        }
+    });
+});

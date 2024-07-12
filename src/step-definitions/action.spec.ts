@@ -10,7 +10,7 @@ defineStep(
 
     if (value) {
       const processEnv = new ProcessEnvironmentVariables();
-      await processEnv.set(name, value);
+      processEnv.set(name, value);
     } else {
       console.error(
         `Error: Step - I get a part of the URL based on ${regExp} regular expression and save it as ${name} - was called but the value was empty`

@@ -27,6 +27,9 @@ defineStep(
         break;
       case 'choose':
         await pageActions.fillADropDown(element, text);
+        break;
+      default:
+        throw new Error(`Unsupported action: ${action}`);
     }
   }
 );

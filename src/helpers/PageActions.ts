@@ -124,10 +124,8 @@ export default class PageActions {
         return this.page.getByLabel(text).nth(sequence);
       case 'placeholder':
         return this.page.getByPlaceholder(text).nth(sequence);
-      case 'role': {
-        const role = text as RoleType;
-        return this.page.getByRole(role).nth(sequence);
-      }
+      case 'role':
+        return this.page.getByRole(text as RoleType).nth(sequence);
       case 'test ID':
         return this.page.getByTestId(text).nth(sequence);
       case 'alternative text':
@@ -153,17 +151,19 @@ export default class PageActions {
   }
 
   async getNPage(closeIt: boolean, N: number) {
-    if (this.context) {
-      await this.context.waitForEvent('page', { timeout: 1000 }).catch(() => null);
-      const pages = this.context.pages();
-      const newTab = pages[N - 1];
-      if (closeIt) {
-        newTab.close();
-      }
-      return newTab;
-    } else {
+    if (!this.context) {
       throw new Error('getNPage, context is not defined');
     }
+
+    await this.context.waitForEvent('page', { timeout: 1000 }).catch(() => null);
+    const pages = this.context.pages();
+    const newTab = pages[N - 1];
+
+    if (closeIt) {
+      newTab.close();
+    }
+
+    return newTab;
   }
 
   async saveCurrentURLToEnvAs(name: string) {
@@ -182,6 +182,7 @@ export default class PageActions {
     for (const message of messages) {
       const elementPromise = this.getNElementBy('text', 1, message);
       const element = await elementPromise;
+
       if (await element.isVisible({ timeout: 0 })) {
         const assertionMessage = `${message} element stays visible for more than ${timeout}ms`;
         await this.assertions.checkElementState(elementPromise, 'hidden', timeout, assertionMessage);
@@ -206,25 +207,30 @@ export default class PageActions {
     await this.page.mouse.click(0, 0, { delay: 150 });
     await this.page.waitForTimeout(200);
     const value = await fieldLocator.getAttribute('value');
+
     return option === value;
   }
 
   async fillInFormData(name: string, version: number) {
     const data = getEntityData(name, version);
     let nameSaved = false;
+
     for (const key in data) {
+      const value = data[key];
       if (!nameSaved) {
-        this.processEnv.set('latestName', data[key]);
+        this.processEnv.set('latestName', value);
         nameSaved = true;
       }
+
       const fieldLocator = this.page.getByLabel(key).last();
       if ((await fieldLocator.getAttribute('role')) === 'combobox') {
-        await this.fillADropDown(fieldLocator, data[key]);
+        await this.fillADropDown(fieldLocator, value);
       } else {
         await fieldLocator.fill(data[key]);
       }
+
       await this.page.waitForTimeout(150);
-      if ((await fieldLocator.inputValue()) !== data[key]) {
+      if ((await fieldLocator.inputValue()) !== value) {
         console.error(`Couldnt type the ${data[key]}`);
       }
     }

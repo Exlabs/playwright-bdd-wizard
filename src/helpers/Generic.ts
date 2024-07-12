@@ -52,6 +52,7 @@ export default class Generic {
       const randomDigit = Math.floor(Math.random() * 10);
       result += randomDigit.toString();
     }
+
     return result;
   }
 
@@ -60,11 +61,11 @@ export default class Generic {
     const day = String(today.getDate()).padStart(2, '0');
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const year = String(today.getFullYear());
+
     return `${day}-${month}-${year}`;
   }
 
   async generateUniqueName(name: string = 'Automated Test: ', numbersLength: number = 5) {
-    const entityName = name + (await this.getRandomNumberString(numbersLength));
-    return entityName;
+    return name + (await this.getRandomNumberString(numbersLength));
   }
 }

@@ -3,7 +3,7 @@ export default class ProcessEnvironmentVariables {
     return process.env[name];
   }
 
-  async set(name: string, value: string) {
+  set(name: string, value: string) {
     process.env[name] = value;
   }
 

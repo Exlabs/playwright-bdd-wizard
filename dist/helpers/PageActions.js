@@ -35,10 +35,8 @@ class PageActions {
                     return this.page.getByLabel(text).nth(sequence);
                 case 'placeholder':
                     return this.page.getByPlaceholder(text).nth(sequence);
-                case 'role': {
-                    const role = text;
-                    return this.page.getByRole(role).nth(sequence);
-                }
+                case 'role':
+                    return this.page.getByRole(text).nth(sequence);
                 case 'test ID':
                     return this.page.getByTestId(text).nth(sequence);
                 case 'alternative text':
@@ -66,18 +64,16 @@ class PageActions {
     }
     getNPage(closeIt, N) {
         return __awaiter(this, void 0, void 0, function* () {
-            if (this.context) {
-                yield this.context.waitForEvent('page', { timeout: 1000 }).catch(() => null);
-                const pages = this.context.pages();
-                const newTab = pages[N - 1];
-                if (closeIt) {
-                    newTab.close();
-                }
-                return newTab;
-            }
-            else {
+            if (!this.context) {
                 throw new Error('getNPage, context is not defined');
             }
+            yield this.context.waitForEvent('page', { timeout: 1000 }).catch(() => null);
+            const pages = this.context.pages();
+            const newTab = pages[N - 1];
+            if (closeIt) {
+                newTab.close();
+            }
+            return newTab;
         });
     }
     saveCurrentURLToEnvAs(name) {
@@ -133,19 +129,20 @@ class PageActions {
             const data = (0, index_js_2.getEntityData)(name, version);
             let nameSaved = false;
             for (const key in data) {
+                const value = data[key];
                 if (!nameSaved) {
-                    this.processEnv.set('latestName', data[key]);
+                    this.processEnv.set('latestName', value);
                     nameSaved = true;
                 }
                 const fieldLocator = this.page.getByLabel(key).last();
                 if ((yield fieldLocator.getAttribute('role')) === 'combobox') {
-                    yield this.fillADropDown(fieldLocator, data[key]);
+                    yield this.fillADropDown(fieldLocator, value);
                 }
                 else {
                     yield fieldLocator.fill(data[key]);
                 }
                 yield this.page.waitForTimeout(150);
-                if ((yield fieldLocator.inputValue()) !== data[key]) {
+                if ((yield fieldLocator.inputValue()) !== value) {
                     console.error(`Couldnt type the ${data[key]}`);
                 }
             }

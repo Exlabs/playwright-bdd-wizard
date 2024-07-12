@@ -25,7 +25,7 @@ const index_js_2 = require("../test-data-configs/index.js");
         yield assertions.checkValue(secoundTab === null || secoundTab === void 0 ? void 0 : secoundTab.url(), userUrl, assertion, `New tab with ${urlKey} url didnt open`);
     });
 });
-(0, cucumber_1.defineStep)('I verify if URL {string} {string}', function (assertion, name) {
+(0, cucumber_1.defineStep)('I verify if the URL {string} {string}', function (assertion, name) {
     return __awaiter(this, void 0, void 0, function* () {
         const generic = new index_js_1.Generic();
         const assertions = new index_js_1.Assertions();

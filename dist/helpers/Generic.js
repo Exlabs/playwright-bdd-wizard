@@ -82,8 +82,7 @@ class Generic {
     }
     generateUniqueName() {
         return __awaiter(this, arguments, void 0, function* (name = 'Automated Test: ', numbersLength = 5) {
-            const entityName = name + (yield this.getRandomNumberString(numbersLength));
-            return entityName;
+            return name + (yield this.getRandomNumberString(numbersLength));
         });
     }
 }

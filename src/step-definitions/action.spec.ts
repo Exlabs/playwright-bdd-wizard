@@ -10,7 +10,7 @@ defineStep(
 
     if (value) {
       const processEnv = new ProcessEnvironmentVariables();
-      await processEnv.set(name, value);
+      processEnv.set(name, value);
     } else {
       console.error(
         `Error: Step - I get a part of the URL based on ${regExp} regular expression and save it as ${name} - was called but the value was empty`
@@ -60,7 +60,7 @@ defineStep('I wait for the page to load', async function () {
   await pageActions.waitForPageToLoad();
 });
 
-defineStep('I {string} {string} on the keyboard', async function (action: 'type' | 'press', text: string) {
+defineStep('I {string} {string}', async function (action: 'type' | 'press', text: string) {
   const processEnv = new ProcessEnvironmentVariables();
   const resolvedText = await processEnv.getEnvVarOrDefault(text);
 

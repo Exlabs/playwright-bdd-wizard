@@ -32,6 +32,9 @@ const index_js_1 = require("../helpers/index.js");
                 break;
             case 'choose':
                 yield pageActions.fillADropDown(element, text);
+                break;
+            default:
+                throw new Error(`Unsupported action: ${action}`);
         }
     });
 });

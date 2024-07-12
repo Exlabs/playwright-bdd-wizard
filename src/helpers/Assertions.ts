@@ -60,6 +60,7 @@ export default class Assertions {
     if (!assertionType && (expected == 'empty' || expected == 'notEmpty' || expected == 'ignore')) {
       return;
     }
+
     switch (assertionType) {
       case 'notEmpty':
         expect.soft(value, message).not.toEqual('');

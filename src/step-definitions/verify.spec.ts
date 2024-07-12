@@ -24,7 +24,7 @@ defineStep(
   }
 );
 
-defineStep('I verify if URL {string} {string}', async function (assertion: ValueAssertionType, name: string) {
+defineStep('I verify if the URL {string} {string}', async function (assertion: ValueAssertionType, name: string) {
   const generic = new Generic();
   const assertions = new Assertions();
   const expectedUrl = await generic.getUrlBasedOnUserInput(name);

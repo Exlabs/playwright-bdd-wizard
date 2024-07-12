@@ -2,3 +2,4 @@ node_modules
 cucumber.mjs
 tests/features/example.feature
 .history
+.features-gen/

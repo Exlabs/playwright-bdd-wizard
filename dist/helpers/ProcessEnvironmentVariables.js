@@ -14,9 +14,7 @@ class ProcessEnvironmentVariables {
         return process.env[name];
     }
     set(name, value) {
-        return __awaiter(this, void 0, void 0, function* () {
-            process.env[name] = value;
-        });
+        process.env[name] = value;
     }
     getEnvVarOrDefault(value) {
         return __awaiter(this, void 0, void 0, function* () {

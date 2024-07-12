@@ -20,7 +20,7 @@ const index_js_1 = require("../helpers/index.js");
         const value = yield generic.getSubString(url, regExp);
         if (value) {
             const processEnv = new index_js_1.ProcessEnvironmentVariables();
-            yield processEnv.set(name, value);
+            processEnv.set(name, value);
         }
         else {
             console.error(`Error: Step - I get a part of the URL based on ${regExp} regular expression and save it as ${name} - was called but the value was empty`);
@@ -74,7 +74,7 @@ const index_js_1 = require("../helpers/index.js");
         yield pageActions.waitForPageToLoad();
     });
 });
-(0, cucumber_1.defineStep)('I {string} {string} on the keyboard', function (action, text) {
+(0, cucumber_1.defineStep)('I {string} {string}', function (action, text) {
     return __awaiter(this, void 0, void 0, function* () {
         const processEnv = new index_js_1.ProcessEnvironmentVariables();
         const resolvedText = yield processEnv.getEnvVarOrDefault(text);

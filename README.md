@@ -56,7 +56,7 @@ For more information, visit the [Playwright documentation](https://playwright.de
 
 1. Install the provided version of `playwright-bdd-wizard`:
     ```sh
-    npm install github:Exlabs/playwright-bdd-wizard
+    npm i @exlabs/playwright-bdd-wizard
     ```
     This will create example tests in the `tests/features` directory.
 

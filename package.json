@@ -1,7 +1,7 @@
 {
-  "name": "playwright-bdd-wizard",
-  "version": "0.1",
-  "description": "",
+  "name": "@exlabs/playwright-bdd-wizard",
+  "version": "0.1.1",
+  "description": "It's easy-to-use TypeScript library designed to simplify Playwright BDD (Behavior-Driven Development) tests by providing a comprehensive set of reusable and flexible common steps.",
   "main": "dist/index.js",
   "bin": {
     "bdd-tests": "npx bddgen && npx playwright test",
@@ -36,5 +36,7 @@
     "globals": "^15.8.0",
     "prettier": "^3.3.2",
     "typescript-eslint": "^7.16.0"
-  }
+  },
+  "repository": "@exlabs/playwright-bdd-wizard",
+  "homepage": "https://github.com/Exlabs/playwright-bdd-wizard"
 }

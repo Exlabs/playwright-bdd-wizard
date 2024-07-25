@@ -11,7 +11,7 @@ const filesToCreate = [
     content: `Feature: Example test
 
     Scenario: Example with google
-        When I open "https://www.google.com" page
+        When I open "https://www.google.com/?hl=en-GB" page
         Then If its visible, I "click" the "2" element with "Reject all" "text"
         And I "type" "playwright" in the "1" element with "Search" "title"
         And I "press" "Enter"
